@@ -1,0 +1,42 @@
+[project]
+name = "resume-parser"
+version = "0.1.0"
+description = "Resume parsing and search engine"
+authors = [
+    { name = "Manoj-Dewda", email = "dewdamanoj9@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2",
+]
+
+[dependency-groups]
+dev = [
+    "ruff",
+    "pytest",
+]
+eval = [
+    "google-genai",
+    "python-dotenv",
+]
+
+[tool.uv]
+default-groups = ["dev", "eval"]
+
+[build-system]
+requires = ["uv_build>=0.12.3,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "parser"
+module-root = "packages"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["packages", "eval"]
