@@ -3,7 +3,7 @@
 Last updated: 2026-08-18
 
 ## Current state
-Build order steps 1-4 done (step 4 just finished, unreviewed).
+Build order steps 1-4 done, committed, and pushed to origin/main.
 
 - `eval/corpus/` + `packages/parser/`: synthetic corpus and pure-library
   parser (`parse_resume(client, data, file_type) -> Resume`, Gemini
