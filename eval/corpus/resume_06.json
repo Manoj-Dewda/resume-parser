@@ -1,0 +1,47 @@
+{
+  "name": "Julian R. Fletcher",
+  "email": "julian.r.fletcher@mailflow.com",
+  "phone": "(415) 555-0182",
+  "location": "San Francisco, CA",
+  "positions": [
+    {
+      "title": "Senior QA Automation Engineer",
+      "company": "Apex Software Solutions",
+      "start_date": "2021-12",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "QA Engineer",
+      "company": "Apex Software Solutions",
+      "start_date": "2019-09",
+      "end_date": "2021-11",
+      "is_current": false
+    },
+    {
+      "title": "Associate QA Engineer",
+      "company": "Apex Software Solutions",
+      "start_date": "2017-06",
+      "end_date": "2019-08",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Science in Computer Science",
+      "institution": "San Francisco State University",
+      "graduation_date": "2017-05"
+    }
+  ],
+  "skills": [
+    "Python",
+    "Selenium",
+    "JUnit",
+    "Jenkins",
+    "SQL",
+    "Git",
+    "API Testing",
+    "JIRA",
+    "Agile Methodology"
+  ]
+}

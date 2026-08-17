@@ -1,0 +1,73 @@
+{
+  "name": "Arthur P. Sterling",
+  "email": "arthur.sterling@apex-executive.com",
+  "phone": "(312) 555-0143",
+  "location": "Chicago, IL",
+  "positions": [
+    {
+      "title": "Chief Operating Officer",
+      "company": "Apex Global Logistics",
+      "start_date": "2018",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Senior Vice President of Operations",
+      "company": "Apex Global Logistics",
+      "start_date": "2011",
+      "end_date": "2018",
+      "is_current": false
+    },
+    {
+      "title": "Vice President of Supply Chain",
+      "company": "Meridian Industrial Corp",
+      "start_date": "2005",
+      "end_date": "2011",
+      "is_current": false
+    },
+    {
+      "title": "Director of Logistics",
+      "company": "Meridian Industrial Corp",
+      "start_date": "2000",
+      "end_date": "2005",
+      "is_current": false
+    },
+    {
+      "title": "Senior Operations Manager",
+      "company": "Vanguard Enterprises",
+      "start_date": "1995",
+      "end_date": "2000",
+      "is_current": false
+    },
+    {
+      "title": "Logistics Analyst",
+      "company": "Vanguard Enterprises",
+      "start_date": "1990",
+      "end_date": "1995",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "Master of Business Administration in Finance",
+      "institution": "Northwestern University",
+      "graduation_date": "1990"
+    },
+    {
+      "degree": "Bachelor of Science in Industrial Engineering",
+      "institution": "University of Michigan",
+      "graduation_date": "1988"
+    }
+  ],
+  "skills": [
+    "Executive Leadership",
+    "Global Supply Chain",
+    "P&L Management",
+    "Operational Strategy",
+    "Digital Transformation",
+    "Change Management",
+    "Strategic Planning",
+    "Vendor Negotiation",
+    "Lean Manufacturing"
+  ]
+}

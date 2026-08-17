@@ -1,0 +1,31 @@
+Lukas Wagner
+Address: Munich, Germany | Phone: +49 176 12345678 | Email: lukas.wagner@techmail.de
+
+WORK EXPERIENCE
+
+01.07.2021 - Present
+Senior Software Engineer
+Infineon Technologies, Munich
+- Design and develop robust embedded and cloud software architectures
+- Mentor junior developers and lead agile sprint planning
+
+01.04.2018 - 30.06.2021
+Software Engineer
+BMW Group, Munich
+- Implemented microservices for connected vehicle systems using Java and Spring Boot
+- Maintained containerized deployments using Docker and Kubernetes
+
+01.11.2015 - 31.03.2018
+Junior Software Engineer
+Siemens AG, Munich
+- Developed backend services in C++ and Python
+- Contributed to CI/CD pipeline optimization and unit testing
+
+EDUCATION
+
+Master of Science in Informatics
+Technical University of Munich (TUM)
+Graduation Date: 30.09.2015
+
+SKILLS
+Java, Spring Boot, C++, Python, Docker, Kubernetes, Git, CI/CD, Agile Methodologies, SQL

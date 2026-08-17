@@ -1,0 +1,17 @@
+garrett vance
+contact: garrett.vance.dev@gmail.com | +1-512-555-0184 | Austin, TX
+
+experience:
+Senior Web Developer at Apex Retail Group (Oct 2021 - Present)
+Led development of new cloud-native retail applications. Maintained high performance across core landing pages.
+
+Freelance Full-Stack Consultant at Vance Digital Solutions (Jun 2022 - Jun 2023)
+Designed and deployed bespoke database structures and API integrations for external enterprise clients on a contract basis.
+
+Software Engineer at DevStream Technologies (Jan 2019 - Sep 2021)
+Built modular user interfaces and engineered RESTful microservices. Managed continuous integration pipelines.
+
+education:
+B.S. in Computer Science at University of Texas at Austin (Dec 2018)
+
+skills: JavaScript, React, Node.js, Python, PostgreSQL, AWS, Git, REST APIs, Docker, CI/CD

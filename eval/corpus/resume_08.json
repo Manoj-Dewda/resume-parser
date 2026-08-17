@@ -1,0 +1,61 @@
+{
+  "name": "Devon M. Vance",
+  "email": "devon.vance.dev@gmail.com",
+  "phone": "(512) 555-0143",
+  "location": "Austin, TX",
+  "positions": [
+    {
+      "title": "Full Stack Developer",
+      "company": "SwiftScript Co.",
+      "start_date": "2022-06",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Frontend Engineer",
+      "company": "PixelPerfect Interactive",
+      "start_date": "2021-12",
+      "end_date": "2022-03",
+      "is_current": false
+    },
+    {
+      "title": "Software Engineer I",
+      "company": "CloudNest Labs",
+      "start_date": "2021-06",
+      "end_date": "2021-09",
+      "is_current": false
+    },
+    {
+      "title": "Web Developer",
+      "company": "ByteSize Solutions",
+      "start_date": "2020-12",
+      "end_date": "2021-03",
+      "is_current": false
+    },
+    {
+      "title": "Junior Front-End Developer",
+      "company": "AppForge Studios",
+      "start_date": "2020-06",
+      "end_date": "2020-09",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Science in Computer Science",
+      "institution": "Texas State University",
+      "graduation_date": "2020-05"
+    }
+  ],
+  "skills": [
+    "JavaScript",
+    "React",
+    "Node.js",
+    "Express",
+    "PostgreSQL",
+    "Git",
+    "REST APIs",
+    "Tailwind CSS",
+    "Agile Development"
+  ]
+}

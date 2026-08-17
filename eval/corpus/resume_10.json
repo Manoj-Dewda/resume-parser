@@ -1,0 +1,48 @@
+{
+  "name": "Lukas Wagner",
+  "email": "lukas.wagner@techmail.de",
+  "phone": "+49 176 12345678",
+  "location": "Munich, Germany",
+  "positions": [
+    {
+      "title": "Senior Software Engineer",
+      "company": "Infineon Technologies",
+      "start_date": "2021-07",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Software Engineer",
+      "company": "BMW Group",
+      "start_date": "2018-04",
+      "end_date": "2021-06",
+      "is_current": false
+    },
+    {
+      "title": "Junior Software Engineer",
+      "company": "Siemens AG",
+      "start_date": "2015-11",
+      "end_date": "2018-03",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "Master of Science in Informatics",
+      "institution": "Technical University of Munich (TUM)",
+      "graduation_date": "2015-09"
+    }
+  ],
+  "skills": [
+    "Java",
+    "Spring Boot",
+    "C++",
+    "Python",
+    "Docker",
+    "Kubernetes",
+    "Git",
+    "CI/CD",
+    "Agile Methodologies",
+    "SQL"
+  ]
+}

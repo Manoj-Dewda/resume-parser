@@ -1,0 +1,53 @@
+{
+  "name": "Caleb Vance",
+  "email": "c.vance@fictionalmail.com",
+  "phone": "555-829-3011",
+  "location": "Seattle, WA",
+  "positions": [
+    {
+      "title": "Operations Manager",
+      "company": "Apex Global Logistics",
+      "start_date": "2021-01",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Assistant Operations Manager",
+      "company": "Apex Global Logistics",
+      "start_date": "2018-06",
+      "end_date": "2020-12",
+      "is_current": false
+    },
+    {
+      "title": "Logistics Coordinator",
+      "company": "Apex Global Logistics",
+      "start_date": "2015",
+      "end_date": "2018",
+      "is_current": false
+    },
+    {
+      "title": "Warehouse Associate",
+      "company": "Metro Shipping Solutions",
+      "start_date": "2013",
+      "end_date": "2015",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.S. in Business Administration",
+      "institution": "University of Washington",
+      "graduation_date": "2013"
+    }
+  ],
+  "skills": [
+    "Supply Chain Management",
+    "Inventory Control",
+    "Warehouse Operations",
+    "Forklift Operation",
+    "Team Leadership",
+    "Process Optimization",
+    "Logistical Planning",
+    "Vendor Management"
+  ]
+}

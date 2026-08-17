@@ -1,0 +1,43 @@
+Maya J. Sterling
+Austin, TX | maya.sterling.dev@email.com | +1-512-555-0184
+
+How to Contact Me
+Email: maya.sterling.dev@email.com
+Phone: +1-512-555-0184
+Location: Austin, TX
+
+Where I've Worked
+
+Senior Software Engineer | BlueWave Tech
+2021 - Present
+- Lead a team of developers building cloud-native SaaS applications.
+- Leverage AWS and Docker for containerized microservices.
+
+[Note: 2019 - 2021 | Career sabbatical to care for an ailing family member]
+
+Software Engineer | DevFlow Solutions
+2016 - 2019
+- Developed API integrations and responsive front-ends.
+- Utilized Python, Django, and React to deliver robust client features.
+
+Junior Web Developer | Apex Web Systems
+2013 - 2016
+- Maintained legacy databases and created dynamic UI modules.
+- Learned PostgreSQL and Git in a collaborative team setting.
+
+My Education
+
+Bachelor of Science in Computer Science
+University of Texas at Austin
+2013
+
+What I Know
+- Python
+- Django
+- React
+- AWS
+- Docker
+- PostgreSQL
+- REST APIs
+- Git
+- Agile Methodology

@@ -1,0 +1,47 @@
+{
+  "name": "Melanie J. Thornton",
+  "email": "melanie.thornton@email.com",
+  "phone": "(415) 555-8291",
+  "location": "San Francisco, CA",
+  "positions": [
+    {
+      "title": "Senior Software Engineer",
+      "company": "FinTech Solutions Inc.",
+      "start_date": "2021-10",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Software Engineer",
+      "company": "DevCorp Technologies",
+      "start_date": "2018-06",
+      "end_date": "2021-10",
+      "is_current": false
+    },
+    {
+      "title": "Associate Developer",
+      "company": "WebStart LLC",
+      "start_date": "2015-08",
+      "end_date": "2018-06",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Science in Computer Science",
+      "institution": "San Francisco State University",
+      "graduation_date": "2015-05"
+    }
+  ],
+  "skills": [
+    "Python",
+    "Java",
+    "Django",
+    "PostgreSQL",
+    "Docker",
+    "AWS",
+    "Git",
+    "Agile Methodology",
+    "REST APIs"
+  ]
+}

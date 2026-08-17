@@ -1,0 +1,35 @@
+Marcus Thorne
+Austin, TX | (512) 555-0189 | marcus.thorne.dev@gmail.com
+
+Professional Summary
+Highly skilled Full Stack Software Engineer and independent consultant with over 8 years of experience designing, building, and deploying scalable web applications. Expert in modern JavaScript frameworks, cloud infrastructure, and agile methodologies.
+
+Experience
+
+Vanguard Digital Consulting (Self-Employed) | Jun 2015 - Present
+Principal Consultant
+Operate an independent technical consultancy providing architectural guidance, full stack development, and DevOps services to enterprise and startup clients.
+
+Chevron | Jan 2021 - Present
+Senior Full Stack Engineer (Contractor)
+- Architected and deployed microservices using Node.js and AWS Lambda.
+- Migrated legacy dashboard to React, improving initial load times by 40%.
+
+BlueShield | Mar 2018 - Nov 2020
+Lead Web Developer (Contractor)
+- Led a team of 4 remote developers to build a HIPAA-compliant portal.
+- Utilized TypeScript, React, GraphQL, and PostgreSQL.
+
+Nexa Corp | Jun 2015 - Jan 2018
+Senior Frontend Developer (Contractor)
+- Designed and implemented dynamic UI components with React and Redux.
+- Established robust CI/CD pipelines using Docker and GitLab CI.
+
+Education
+
+University of Texas at Austin
+Bachelor of Science in Computer Science
+May 2015
+
+Skills
+React, Node.js, TypeScript, AWS, GraphQL, Docker, PostgreSQL, CI/CD, Agile Methodology, Git

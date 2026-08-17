@@ -1,0 +1,39 @@
+{
+  "name": "Jordan Vance",
+  "email": "jordan.vance@email.com",
+  "phone": "(555) 382-9104",
+  "location": "Austin, TX",
+  "positions": [
+    {
+      "title": "Marketing Intern",
+      "company": "Brightwave Digital",
+      "start_date": "2022-06",
+      "end_date": "2022-12",
+      "is_current": false
+    },
+    {
+      "title": "Campus Bookstore Associate",
+      "company": "Longhorn Outpost",
+      "start_date": "2023-01",
+      "end_date": "2023-05",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Business Administration in Marketing",
+      "institution": "University of Texas at Austin",
+      "graduation_date": "2023-05"
+    }
+  ],
+  "skills": [
+    "Social Media Marketing",
+    "Google Analytics",
+    "Content Creation",
+    "Customer Service",
+    "Microsoft Excel",
+    "Copywriting",
+    "Time Management",
+    "Team Collaboration"
+  ]
+}

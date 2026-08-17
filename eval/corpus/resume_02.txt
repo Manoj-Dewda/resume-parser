@@ -1,0 +1,31 @@
+Marcus L. Vance
+marcus.vance.dev@gmail.com | (415) 555-8902 | San Francisco, CA
+
+Professional Experience
+
+Zenith FinTech Solutions
+Senior Software Engineer
+02/2022 - Present
+- Lead development of high-throughput financial transaction processing APIs using Python and Django.
+- Mentored junior engineers and implemented CI/CD pipelines using AWS and Docker.
+
+Apex Logistics
+Software Engineer II
+04/2018 - 08/2020
+- Designed and implemented real-time tracking features using React and PostgreSQL.
+- Utilized Redis for caching to improve application response times by 35%.
+
+ByteCraft Agency
+Junior Web Developer
+06/2014 - 03/2018
+- Developed and maintained multiple client-facing websites using Git for version control.
+- Collaborated with design teams to build RESTful APIs.
+
+Education
+
+San Francisco State University
+B.S. in Computer Science
+05/2014
+
+Skills
+Python, Django, PostgreSQL, Docker, AWS, React, RESTful APIs, Git, Agile, Redis

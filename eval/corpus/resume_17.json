@@ -1,0 +1,39 @@
+{
+  "name": "Maria Clara Santos",
+  "email": "maria.santos@email.ph",
+  "phone": "+63 917 555 1234",
+  "location": "Makati City, Metro Manila, Philippines",
+  "positions": [
+    {
+      "title": "Digital Marketing Specialist",
+      "company": "Sunrise Media Solutions",
+      "start_date": "2021-03",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Junior Marketing Associate",
+      "company": "MetroRetail Corp.",
+      "start_date": "2018-06",
+      "end_date": "2021-02",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Science in Business Administration",
+      "institution": "De La Salle University",
+      "graduation_date": "2018"
+    }
+  ],
+  "skills": [
+    "Digital Marketing",
+    "Social Media Management",
+    "Content Creation",
+    "Brand Strategy",
+    "Google Analytics",
+    "Copywriting",
+    "Event Planning",
+    "Microsoft Office"
+  ]
+}

@@ -1,0 +1,34 @@
+Julian R. Fletcher
+(415) 555-0182 | julian.r.fletcher@mailflow.com | San Francisco, CA
+
+Professional Summary
+Detail-oriented QA Automation Engineer with over 6 years of experience in designing, developing, and executing automated test suites for web applications.
+
+Work Experience
+
+Apex Software Solutions
+Senior QA Automation Engineer
+Dec '21 - Present
+- Led a team of 4 QA engineers in migrating legacy manual test suites to Selenium WebDriver with Python.
+- Improved overall test coverage by 40% and reduced release cycle times.
+
+Apex Software Solutions
+QA Engineer
+Sep '19 - Nov '21
+- Authored automated test scripts using Python and JUnit.
+- Set up continuous integration pipelines in Jenkins for automated nightly builds.
+
+Apex Software Solutions
+Associate QA Engineer
+Jun '17 - Aug '19
+- Executed manual and automated tests for web-based products.
+- Logged bugs and collaborated with developers to verify fixes using JIRA.
+
+Education
+
+Bachelor of Science in Computer Science
+San Francisco State University
+May '17
+
+Technical Skills
+Python, Selenium, JUnit, Jenkins, SQL, Git, API Testing, JIRA, Agile Methodology

@@ -1,0 +1,47 @@
+{
+  "name": "Maya J. Sterling",
+  "email": "maya.sterling.dev@email.com",
+  "phone": "+1-512-555-0184",
+  "location": "Austin, TX",
+  "positions": [
+    {
+      "title": "Senior Software Engineer",
+      "company": "BlueWave Tech",
+      "start_date": "2021",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Software Engineer",
+      "company": "DevFlow Solutions",
+      "start_date": "2016",
+      "end_date": "2019",
+      "is_current": false
+    },
+    {
+      "title": "Junior Web Developer",
+      "company": "Apex Web Systems",
+      "start_date": "2013",
+      "end_date": "2016",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Science in Computer Science",
+      "institution": "University of Texas at Austin",
+      "graduation_date": "2013"
+    }
+  ],
+  "skills": [
+    "Python",
+    "Django",
+    "React",
+    "AWS",
+    "Docker",
+    "PostgreSQL",
+    "REST APIs",
+    "Git",
+    "Agile Methodology"
+  ]
+}

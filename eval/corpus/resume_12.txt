@@ -1,0 +1,37 @@
+TYLER J. VANCE
+Austin, TX | (512) 555-0184 | tyler.vance@email.com
+
+SUMMARY
+Experienced Cloud Engineer with a strong background in automating infrastructure and maintaining highly available cloud systems.
+
+EXPERIENCE
+
+VIRTUNET SOLUTIONS
+Senior Cloud Engineer
+Mar 2022 - Present
+- Lead a team of 4 engineers in migrating legacy on-premise applications to AWS.
+- Designed and implemented CI/CD pipelines using Jenkins and GitLab CI.
+- Reduced cloud spend by 25% through optimization and right-sizing strategies.
+
+VIRTUNET SOLUTIONS
+Cloud Infrastructure Engineer
+Nov 2019 - Mar 2022
+- Managed and monitored Kubernetes clusters in production environments.
+- Wrote Terraform templates to provision VPCs, EC2 instances, and RDS databases.
+- Automated routine system administration tasks using Python and Bash.
+
+APEX TECH SYSTEMS
+Systems Administrator
+Aug 2015 - Feb 2019
+- Administered Linux and Windows server environments for 200+ employees.
+- Configured and maintained backup solutions and disaster recovery procedures.
+- Assisted in network configuration, troubleshooting firewall and routing issues.
+
+EDUCATION
+
+TEXAS STATE UNIVERSITY
+Bachelor of Science in Computer Science
+May 2015
+
+SKILLS
+AWS, Terraform, Kubernetes, Linux, Python, Docker, Jenkins, Git, CI/CD, Bash

@@ -1,0 +1,54 @@
+{
+  "name": "Chelsea M. Vance",
+  "email": "chelsea.vance.jobs@email.com",
+  "phone": "(415) 555-8931",
+  "location": "Oakland, CA",
+  "positions": [
+    {
+      "title": "Project Coordinator (Contract)",
+      "company": "Randstad (Client: PG&E)",
+      "start_date": "2023",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Operations Coordinator (Temp)",
+      "company": "Aston Carter (Client: Clorox)",
+      "start_date": "2021",
+      "end_date": "2023",
+      "is_current": false
+    },
+    {
+      "title": "Customer Support Specialist (Contract)",
+      "company": "Aerotek (Client: Kaiser Permanente)",
+      "start_date": "2019",
+      "end_date": "2021",
+      "is_current": false
+    },
+    {
+      "title": "Administrative Assistant (Contract)",
+      "company": "Robert Half (Client: Chevron)",
+      "start_date": "2018",
+      "end_date": "2019",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.A. in Communications",
+      "institution": "San Francisco State University",
+      "graduation_date": "2017"
+    }
+  ],
+  "skills": [
+    "Microsoft Office",
+    "Salesforce CRM",
+    "Calendar Management",
+    "Customer Support",
+    "Data Entry",
+    "Project Coordination",
+    "Google Workspace",
+    "Zoom",
+    "Slack"
+  ]
+}

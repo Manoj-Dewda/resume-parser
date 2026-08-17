@@ -1,0 +1,30 @@
+Alex Mercer
+alex.mercer.dev@examplemail.com | (555) 234-5678 | Austin, TX
+
+My Journey
+
+Cloud Architect | Apex Solutions
+Jan 2022 - Present
+- Leading cloud infrastructure migration and containerization strategies.
+
+Senior DevOps Engineer | Apex Solutions
+Mar 2021 - Dec 2021
+- Spearheaded CI/CD pipeline automation and reduced deployment latency by 40%.
+
+[Note: Sabbatical and freelance consulting from Oct 2019 to Mar 2021]
+
+Systems Administrator | Horizon Tech Corp
+2017 - 2019
+- Maintained on-premise servers and cloud backup systems.
+
+Junior IT Support | DataStream Inc
+2015 - 2017
+- Handled tier-1 and tier-2 hardware and software troubleshooting.
+
+Where I Learned
+
+B.S. in Computer Science | University of Texas at Austin | 2015
+
+Tools I Use
+
+Python, Docker, Kubernetes, AWS, Terraform, Linux, CI/CD, Git, PostgreSQL, Bash

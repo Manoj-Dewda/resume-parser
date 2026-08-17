@@ -1,0 +1,48 @@
+{
+  "name": "Garrett Vance",
+  "email": "garrett.vance.dev@gmail.com",
+  "phone": "+1-512-555-0184",
+  "location": "Austin, TX",
+  "positions": [
+    {
+      "title": "Senior Web Developer",
+      "company": "Apex Retail Group",
+      "start_date": "2021-10",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Freelance Full-Stack Consultant",
+      "company": "Vance Digital Solutions",
+      "start_date": "2022-06",
+      "end_date": "2023-06",
+      "is_current": false
+    },
+    {
+      "title": "Software Engineer",
+      "company": "DevStream Technologies",
+      "start_date": "2019-01",
+      "end_date": "2021-09",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.S. in Computer Science",
+      "institution": "University of Texas at Austin",
+      "graduation_date": "2018-12"
+    }
+  ],
+  "skills": [
+    "JavaScript",
+    "React",
+    "Node.js",
+    "Python",
+    "PostgreSQL",
+    "AWS",
+    "Git",
+    "REST APIs",
+    "Docker",
+    "CI/CD"
+  ]
+}

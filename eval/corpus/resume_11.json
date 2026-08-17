@@ -1,0 +1,62 @@
+{
+  "name": "Lucas Vance",
+  "email": "lucas.vance.dev@gmail.com",
+  "phone": "(512) 555-0182",
+  "location": "Austin, TX",
+  "positions": [
+    {
+      "title": "Senior Software Engineer",
+      "company": "NexaTech Solutions",
+      "start_date": "2021-01",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Contract Web Developer",
+      "company": "BlueStream Media",
+      "start_date": "2022-08",
+      "end_date": "2022-12",
+      "is_current": false
+    },
+    {
+      "title": "Software Engineer",
+      "company": "CoreSystems Inc",
+      "start_date": "2018",
+      "end_date": "2020",
+      "is_current": false
+    },
+    {
+      "title": "Freelance Tech Consultant",
+      "company": "Apex Retail",
+      "start_date": "2019",
+      "end_date": "2020",
+      "is_current": false
+    },
+    {
+      "title": "Junior QA Engineer",
+      "company": "CoreSystems Inc",
+      "start_date": "2016",
+      "end_date": "2018",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Science in Computer Science",
+      "institution": "University of Texas at Austin",
+      "graduation_date": "2016-05"
+    }
+  ],
+  "skills": [
+    "Python",
+    "JavaScript",
+    "React",
+    "Node.js",
+    "AWS",
+    "Docker",
+    "Git",
+    "SQL",
+    "CI/CD",
+    "Agile"
+  ]
+}

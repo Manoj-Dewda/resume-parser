@@ -1,0 +1,48 @@
+{
+  "name": "Aaditya Sharma",
+  "email": "aaditya.sharma.dev@outlook.in",
+  "phone": "+91-98450-12345",
+  "location": "Bengaluru, Karnataka, India",
+  "positions": [
+    {
+      "title": "Senior Software Engineer",
+      "company": "TechVeda Solutions",
+      "start_date": "2021-05",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Software Engineer",
+      "company": "TechVeda Solutions",
+      "start_date": "2019-06",
+      "end_date": "2021-05",
+      "is_current": false
+    },
+    {
+      "title": "Associate Software Engineer",
+      "company": "Infosystem Technologies",
+      "start_date": "2017-07",
+      "end_date": "2019-05",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Technology in Computer Science",
+      "institution": "Visvesvaraya Technological University",
+      "graduation_date": "2017-06"
+    }
+  ],
+  "skills": [
+    "Java",
+    "Spring Boot",
+    "Microservices",
+    "REST APIs",
+    "Hibernate",
+    "PostgreSQL",
+    "Docker",
+    "Kubernetes",
+    "AWS",
+    "Git"
+  ]
+}

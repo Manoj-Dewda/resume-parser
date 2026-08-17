@@ -1,0 +1,35 @@
+LUCAS VANCE
+Phone: (512) 555-0182 | Email: lucas.vance.dev@gmail.com
+Location: Austin, TX
+
+--- Experience ---
+
+Senior Software Engineer
+NexaTech Solutions | Jan 2021 - Present
+- Lead development of high-throughput APIs.
+- Mentored junior engineers and spearheaded cloud migration.
+
+Contract Web Developer
+BlueStream Media | Aug 2022 - Dec 2022
+- Developed custom e-commerce widgets in React.
+- Handled performance optimization and third-party integrations.
+
+Software Engineer
+CoreSystems Inc | 2018-20
+- Built microservices and streamlined CI/CD pipelines.
+
+Freelance Tech Consultant
+Apex Retail | 2019-20
+- Advised on Shopify integrations and local database setup.
+
+Junior QA Engineer
+CoreSystems Inc | 2016-18
+- Executed automated tests and logged bugs.
+
+--- Education ---
+
+Bachelor of Science in Computer Science
+University of Texas at Austin | May 2016
+
+--- Skills ---
+Python, JavaScript, React, Node.js, AWS, Docker, Git, SQL, CI/CD, Agile

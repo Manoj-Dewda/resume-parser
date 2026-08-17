@@ -1,0 +1,31 @@
+JORDAN MILLER
+jordan.miller.dev@email.com | (555) 234-5678 | Austin, TX
+
+Experience
+
+Software Engineer
+Apex Systems (Contract)
+Jan 2021 - Jun 2022
+- Developed internal APIs using Node.js and Express.
+- Collaborated with QA team to resolve bugs and improve stability.
+
+Software Engineer
+Innova Tech Solutions
+Jul 2022 - Present
+- Promoted from contractor to full-time engineer.
+- Architected microservices architecture handling millions of requests daily.
+
+Junior Developer
+ByteCraft Labs
+Aug 2019 - Dec 2020
+- Built responsive front-end components with React and TypeScript.
+
+Education
+
+B.S. in Computer Science
+University of Texas at Austin
+May 2019
+
+Skills
+
+JavaScript, TypeScript, Node.js, Express, React, SQL, Docker, Git, Agile

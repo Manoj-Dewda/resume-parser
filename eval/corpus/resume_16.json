@@ -1,0 +1,55 @@
+{
+  "name": "Alex Mercer",
+  "email": "alex.mercer.dev@examplemail.com",
+  "phone": "(555) 234-5678",
+  "location": "Austin, TX",
+  "positions": [
+    {
+      "title": "Cloud Architect",
+      "company": "Apex Solutions",
+      "start_date": "2022-01",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Senior DevOps Engineer",
+      "company": "Apex Solutions",
+      "start_date": "2021-03",
+      "end_date": "2021-12",
+      "is_current": false
+    },
+    {
+      "title": "Systems Administrator",
+      "company": "Horizon Tech Corp",
+      "start_date": "2017",
+      "end_date": "2019",
+      "is_current": false
+    },
+    {
+      "title": "Junior IT Support",
+      "company": "DataStream Inc",
+      "start_date": "2015",
+      "end_date": "2017",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.S. in Computer Science",
+      "institution": "University of Texas at Austin",
+      "graduation_date": "2015"
+    }
+  ],
+  "skills": [
+    "Python",
+    "Docker",
+    "Kubernetes",
+    "AWS",
+    "Terraform",
+    "Linux",
+    "CI/CD",
+    "Git",
+    "PostgreSQL",
+    "Bash"
+  ]
+}

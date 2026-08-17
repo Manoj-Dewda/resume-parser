@@ -6,44 +6,24 @@ scenarios in SCENARIOS.
 """
 
 import os
+import time
 from pathlib import Path
 
 from dotenv import load_dotenv
 from google import genai
-from google.genai import types
+from google.genai import errors, types
+from parser import Resume
 from pydantic import BaseModel
 
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-3.5-flash"
 CORPUS_DIR = Path(__file__).parent / "corpus"
-
-
-class Position(BaseModel):
-    title: str
-    company: str
-    start_date: str
-    end_date: str
-    is_current: bool
-
-
-class EducationEntry(BaseModel):
-    degree: str
-    institution: str
-    graduation_date: str
-
-
-class GroundTruth(BaseModel):
-    name: str
-    email: str
-    phone: str
-    location: str
-    positions: list[Position]
-    education: list[EducationEntry]
-    skills: list[str]
+MAX_RETRIES = 5
+RETRY_BASE_DELAY_SECONDS = 5
 
 
 class ResumeGeneration(BaseModel):
     resume_text: str
-    ground_truth: GroundTruth
+    ground_truth: Resume
 
 
 # Each scenario pins down the messy, real-world characteristics we need
@@ -280,23 +260,32 @@ between two end/start dates) and must be reflected accurately in `ground_truth`.
 
 def build_client() -> genai.Client:
     load_dotenv()
-    api_key = os.environ.get("api_key = os.environ.get("GEMINI_API_KEY")")
+    api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY not set. Copy .env.example to .env and fill it in.")
     return genai.Client(api_key=api_key)
 
 
 def generate_one(client: genai.Client, scenario: dict) -> ResumeGeneration:
-    response = client.models.generate_content(
-        model=MODEL,
-        contents=PROMPT_TEMPLATE.format(**scenario),
-        config=types.GenerateContentConfig(
-            response_mime_type="application/json",
-            response_schema=ResumeGeneration,
-            temperature=1.0,
-        ),
-    )
-    return ResumeGeneration.model_validate_json(response.text)
+    for attempt in range(MAX_RETRIES):
+        try:
+            response = client.models.generate_content(
+                model=MODEL,
+                contents=PROMPT_TEMPLATE.format(**scenario),
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=ResumeGeneration,
+                    temperature=1.0,
+                ),
+            )
+            return ResumeGeneration.model_validate_json(response.text)
+        except errors.ServerError as e:
+            if attempt == MAX_RETRIES - 1:
+                raise
+            delay = RETRY_BASE_DELAY_SECONDS * (2**attempt)
+            print(f"  server error ({e}), retrying in {delay}s [{attempt + 1}/{MAX_RETRIES}]")
+            time.sleep(delay)
+    raise AssertionError("unreachable")
 
 
 def main() -> None:
@@ -304,12 +293,16 @@ def main() -> None:
     CORPUS_DIR.mkdir(parents=True, exist_ok=True)
 
     for i, scenario in enumerate(SCENARIOS, start=1):
-        result = generate_one(client, scenario)
         stem = f"resume_{i:02d}"
-        (CORPUS_DIR / f"{stem}.txt").write_text(result.resume_text, encoding="utf-8")
-        (CORPUS_DIR / f"{stem}.json").write_text(
-            result.ground_truth.model_dump_json(indent=2), encoding="utf-8"
-        )
+        txt_path = CORPUS_DIR / f"{stem}.txt"
+        json_path = CORPUS_DIR / f"{stem}.json"
+        if txt_path.exists() and json_path.exists():
+            print(f"skipping {stem}  [already exists]")
+            continue
+
+        result = generate_one(client, scenario)
+        txt_path.write_text(result.resume_text, encoding="utf-8")
+        json_path.write_text(result.ground_truth.model_dump_json(indent=2), encoding="utf-8")
         print(f"wrote {stem}.txt / {stem}.json  [{scenario['region']}]")
 
 

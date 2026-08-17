@@ -1,0 +1,38 @@
+Devon M. Vance
+(512) 555-0143 | devon.vance.dev@gmail.com | Austin, TX
+
+Professional Experience
+
+Full Stack Developer
+SwiftScript Co. | Summer '22 - Present
+- Build responsive UI features using React and Tailwind CSS.
+- Design backend endpoints in Express and Node.js.
+
+Frontend Engineer
+PixelPerfect Interactive | Winter '21 - Spring '22
+- Maintained legacy React applications and updated CSS architectures.
+- Collaborated with design teams to construct pixel-perfect prototypes.
+
+Software Engineer I
+CloudNest Labs | Summer '21 - Fall '21
+- Integrated REST APIs for dynamic cloud dashboard products.
+- Wrote unit tests in Jest to boost test coverage.
+
+Web Developer
+ByteSize Solutions | Winter '20 - Spring '21
+- Developed interactive web features using JavaScript and PostgreSQL.
+- Streamlined local databases to improve search query times.
+
+Junior Front-End Developer
+AppForge Studios | Summer '20 - Fall '20
+- Built components and static landing pages using HTML, CSS, and JS.
+- Utilized Git for version control across multi-developer projects.
+
+Education
+
+Bachelor of Science in Computer Science
+Texas State University | Spring '20
+
+Technical Skills
+
+JavaScript, React, Node.js, Express, PostgreSQL, Git, REST APIs, Tailwind CSS, Agile Development

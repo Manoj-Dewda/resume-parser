@@ -1,0 +1,55 @@
+{
+  "name": "Marcus Thorne",
+  "email": "marcus.thorne.dev@gmail.com",
+  "phone": "(512) 555-0189",
+  "location": "Austin, TX",
+  "positions": [
+    {
+      "title": "Principal Consultant",
+      "company": "Vanguard Digital Consulting (Self-Employed)",
+      "start_date": "2015-06",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Senior Full Stack Engineer (Contractor)",
+      "company": "Chevron",
+      "start_date": "2021-01",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Lead Web Developer (Contractor)",
+      "company": "BlueShield",
+      "start_date": "2018-03",
+      "end_date": "2020-11",
+      "is_current": false
+    },
+    {
+      "title": "Senior Frontend Developer (Contractor)",
+      "company": "Nexa Corp",
+      "start_date": "2015-06",
+      "end_date": "2018-01",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Science in Computer Science",
+      "institution": "University of Texas at Austin",
+      "graduation_date": "2015-05"
+    }
+  ],
+  "skills": [
+    "React",
+    "Node.js",
+    "TypeScript",
+    "AWS",
+    "GraphQL",
+    "Docker",
+    "PostgreSQL",
+    "CI/CD",
+    "Agile Methodology",
+    "Git"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "Alastair Vance",
+  "email": "alastair.vance@uknet.co.uk",
+  "phone": "+44 7700 900077",
+  "location": "Manchester, United Kingdom",
+  "positions": [
+    {
+      "title": "Senior Operations Manager",
+      "company": "Apex Logistics Ltd",
+      "start_date": "2021-04",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Operations Supervisor",
+      "company": "Apex Logistics Ltd",
+      "start_date": "2018-09",
+      "end_date": "2021-04",
+      "is_current": false
+    },
+    {
+      "title": "Logistics Coordinator",
+      "company": "NorthWest Distribution Corp",
+      "start_date": "2014-10",
+      "end_date": "2018-08",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "BSc (Hons) Logistics and Supply Chain Management",
+      "institution": "Manchester Metropolitan University",
+      "graduation_date": "2014-07"
+    }
+  ],
+  "skills": [
+    "Supply Chain Optimisation",
+    "Fleet Management",
+    "ERP Systems",
+    "Team Leadership",
+    "Budget Administration",
+    "UK Road Transport Regulations",
+    "Stakeholder Engagement",
+    "Process Improvement"
+  ]
+}

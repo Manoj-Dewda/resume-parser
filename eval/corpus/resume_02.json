@@ -1,0 +1,48 @@
+{
+  "name": "Marcus L. Vance",
+  "email": "marcus.vance.dev@gmail.com",
+  "phone": "(415) 555-8902",
+  "location": "San Francisco, CA",
+  "positions": [
+    {
+      "title": "Senior Software Engineer",
+      "company": "Zenith FinTech Solutions",
+      "start_date": "2022-02",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Software Engineer II",
+      "company": "Apex Logistics",
+      "start_date": "2018-04",
+      "end_date": "2020-08",
+      "is_current": false
+    },
+    {
+      "title": "Junior Web Developer",
+      "company": "ByteCraft Agency",
+      "start_date": "2014-06",
+      "end_date": "2018-03",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.S. in Computer Science",
+      "institution": "San Francisco State University",
+      "graduation_date": "2014-05"
+    }
+  ],
+  "skills": [
+    "Python",
+    "Django",
+    "PostgreSQL",
+    "Docker",
+    "AWS",
+    "React",
+    "RESTful APIs",
+    "Git",
+    "Agile",
+    "Redis"
+  ]
+}

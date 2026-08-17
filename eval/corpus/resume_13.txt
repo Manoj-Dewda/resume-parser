@@ -1,0 +1,33 @@
+LACHLAN MURPHY
+Email: lachlan.murphy@emailau.com.au | Mob: 0491 570 156
+Brisbane, QLD, Australia
+
+CURRICULUM VITAE
+
+Employment
+
+Senior Systems Engineer
+Brisbane Cloud Solutions
+12/04/2021 - Present
+- Lead a team of 4 engineers managing hybrid AWS environments.
+- Deployed scalable IaC templates.
+
+Systems Engineer
+Brisbane Cloud Solutions
+01/11/2018 - 11/04/2021
+- Maintained virtualized infrastructure and handled Linux administration.
+- Wrote Python and Bash scripts to automate daily deployments.
+
+Associate IT Engineer
+Aussie Tech Group
+15/02/2016 - 28/10/2018
+- Assisted with network security protocols and user access management.
+- Troubleshot system outages and updated CI/CD pipelines.
+
+Education
+
+Bachelor of Information Technology
+Queensland University of Technology
+Graduation: 12/11/2015
+
+Skills: AWS Cloud, Linux Administration, Python Scripting, Infrastructure as Code, Docker, CI/CD Pipelines, Bash, Network Security, Git

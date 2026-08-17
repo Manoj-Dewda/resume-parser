@@ -1,0 +1,37 @@
+CURRICULUM VITAE
+
+AADITYA SHARMA
+Email: aaditya.sharma.dev@outlook.in | Mob: +91-98450-12345
+Address: 42, 5th Cross, HSR Layout, Bengaluru, Karnataka, 560102, India
+
+CAREER SUMMARY
+A highly motivated Software Engineer with over 6 years of experience in designing, developing, and deploying robust enterprise applications using Java and Spring Boot. Proven expertise in microservices architecture, cloud deployment, and database optimization.
+
+WORK EXPERIENCE
+
+TechVeda Solutions, Bengaluru
+Senior Software Engineer
+05 May 2021 - Present
+- Lead a team of 4 developers to migration monolith application to microservices.
+- Designed scalable REST APIs and integrated AWS cloud services.
+
+TechVeda Solutions, Bengaluru
+Software Engineer
+10 June 2019 - 04 May 2021
+- Developed and maintained core backend services using Spring Boot and Hibernate.
+- Improved database query performance by 30% in PostgreSQL.
+
+Infosystem Technologies, Pune
+Associate Software Engineer
+15 July 2017 - 31 May 2019
+- Collaborated in an agile team to build web applications using Java and Git.
+- Assisted in unit testing and bug fixing.
+
+ACADEMIC QUALIFICATIONS
+
+Bachelor of Technology in Computer Science
+Visvesvaraya Technological University
+Date of Graduation: 10 June 2017
+
+SKILLS
+Java, Spring Boot, Microservices, REST APIs, Hibernate, PostgreSQL, Docker, Kubernetes, AWS, Git

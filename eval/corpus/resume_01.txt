@@ -1,0 +1,37 @@
+MELANIE J. THORNTON
+(415) 555-8291 | melanie.thornton@email.com | San Francisco, CA
+
+PROFESSIONAL SUMMARY
+Dedicated and results-oriented Software Engineer with over 8 years of experience building scalable web applications. Strong background in backend development, system design, and cloud deployments.
+
+WORK EXPERIENCE
+
+Senior Software Engineer
+FinTech Solutions Inc.
+Oct 2021 - Present
+- Architect and maintain critical microservices handling high-transaction financial data.
+- Led a team of 4 engineers to migrate legacy monolith to Dockerized AWS environment.
+- Mentored junior staff and implemented rigorous code review guidelines.
+
+Software Engineer
+DevCorp Technologies
+Jun 2018 - Oct 2021
+- Developed and optimized RESTful APIs using Python and Django.
+- Improved database query performance by 35% through indexing and schema optimization in PostgreSQL.
+- Collaborative team member utilizing Scrum and Agile methodologies.
+
+Associate Developer
+WebStart LLC
+Aug 2015 - Jun 2018
+- Assisted in the design and implementation of customer-facing web portals using Java.
+- Maintained version control with Git and participated in daily standups.
+- Resolved bugs and improved test coverage across multiple product lines.
+
+EDUCATION
+
+Bachelor of Science in Computer Science
+San Francisco State University
+May 2015
+
+SKILLS
+Python, Java, Django, PostgreSQL, Docker, AWS, Git, Agile Methodology, REST APIs

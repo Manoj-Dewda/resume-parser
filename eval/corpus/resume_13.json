@@ -1,0 +1,47 @@
+{
+  "name": "Lachlan Murphy",
+  "email": "lachlan.murphy@emailau.com.au",
+  "phone": "0491 570 156",
+  "location": "Brisbane, QLD, Australia",
+  "positions": [
+    {
+      "title": "Senior Systems Engineer",
+      "company": "Brisbane Cloud Solutions",
+      "start_date": "2021-04",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Systems Engineer",
+      "company": "Brisbane Cloud Solutions",
+      "start_date": "2018-11",
+      "end_date": "2021-04",
+      "is_current": false
+    },
+    {
+      "title": "Associate IT Engineer",
+      "company": "Aussie Tech Group",
+      "start_date": "2016-02",
+      "end_date": "2018-10",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Information Technology",
+      "institution": "Queensland University of Technology",
+      "graduation_date": "2015-11"
+    }
+  ],
+  "skills": [
+    "AWS Cloud",
+    "Linux Administration",
+    "Python Scripting",
+    "Infrastructure as Code",
+    "Docker",
+    "CI/CD Pipelines",
+    "Bash",
+    "Network Security",
+    "Git"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "name": "JORDAN MILLER",
+  "email": "jordan.miller.dev@email.com",
+  "phone": "(555) 234-5678",
+  "location": "Austin, TX",
+  "positions": [
+    {
+      "title": "Software Engineer",
+      "company": "Innova Tech Solutions",
+      "start_date": "2022-07",
+      "end_date": "",
+      "is_current": true
+    },
+    {
+      "title": "Software Engineer",
+      "company": "Apex Systems",
+      "start_date": "2021-01",
+      "end_date": "2022-06",
+      "is_current": false
+    },
+    {
+      "title": "Junior Developer",
+      "company": "ByteCraft Labs",
+      "start_date": "2019-08",
+      "end_date": "2020-12",
+      "is_current": false
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.S. in Computer Science",
+      "institution": "University of Texas at Austin",
+      "graduation_date": "2019-05"
+    }
+  ],
+  "skills": [
+    "JavaScript",
+    "TypeScript",
+    "Node.js",
+    "Express",
+    "React",
+    "SQL",
+    "Docker",
+    "Git",
+    "Agile"
+  ]
+}
