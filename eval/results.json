@@ -1,0 +1,949 @@
+{
+  "generated_at": "2026-08-17T20:30:56.172181+00:00",
+  "overall": 0.9660296225513617,
+  "aggregate": {
+    "name": 1.0,
+    "email": 1.0,
+    "phone": 1.0,
+    "location": 0.9,
+    "skills_f1": 1.0,
+    "position.title": 0.9565217391304348,
+    "position.company": 0.927536231884058,
+    "position.start_date": 0.927536231884058,
+    "position.end_date": 0.9420289855072463,
+    "position.is_current": 1.0,
+    "education.degree": 1.0,
+    "education.institution": 1.0,
+    "education.graduation_date": 0.9047619047619048
+  },
+  "per_resume": [
+    {
+      "resume": "resume_01",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_02",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_03",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_04",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_05",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_06",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_07",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": false,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_08",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "position.end_date": [
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          false
+        ]
+      }
+    },
+    {
+      "resume": "resume_09",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_10",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          false,
+          false,
+          false
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_11",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_12",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_13",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_14",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "position.company": [
+          false,
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_15",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_16",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_17",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          false
+        ]
+      }
+    },
+    {
+      "resume": "resume_18",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_19",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": true,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          false
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true
+        ],
+        "education.institution": [
+          true
+        ],
+        "education.graduation_date": [
+          true
+        ]
+      }
+    },
+    {
+      "resume": "resume_20",
+      "scores": {
+        "name": true,
+        "email": true,
+        "phone": true,
+        "location": false,
+        "skills_f1": 1.0,
+        "position.title": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.company": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.start_date": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.end_date": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "position.is_current": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "education.degree": [
+          true,
+          true
+        ],
+        "education.institution": [
+          true,
+          true
+        ],
+        "education.graduation_date": [
+          true,
+          true
+        ]
+      }
+    }
+  ]
+}
