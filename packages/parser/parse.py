@@ -21,9 +21,9 @@ Resume text:
 """
 
 
-def parse_resume_text(client: genai.Client, resume_text: str) -> Resume:
+def parse_resume_text(client: genai.Client, resume_text: str, model: str = MODEL) -> Resume:
     response = client.models.generate_content(
-        model=MODEL,
+        model=model,
         contents=PROMPT_TEMPLATE.format(resume_text=resume_text),
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
@@ -34,11 +34,13 @@ def parse_resume_text(client: genai.Client, resume_text: str) -> Resume:
     return Resume.model_validate_json(response.text)
 
 
-def parse_resume(client: genai.Client, data: bytes, file_type: Literal["pdf", "docx"]) -> Resume:
+def parse_resume(
+    client: genai.Client, data: bytes, file_type: Literal["pdf", "docx"], model: str = MODEL
+) -> Resume:
     if file_type == "pdf":
         resume_text = extract_text_from_pdf(data)
     elif file_type == "docx":
         resume_text = extract_text_from_docx(data)
     else:
         raise ValueError(f"unsupported file_type: {file_type!r}")
-    return parse_resume_text(client, resume_text)
+    return parse_resume_text(client, resume_text, model=model)

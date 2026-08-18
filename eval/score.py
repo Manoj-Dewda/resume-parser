@@ -6,6 +6,7 @@ accuracy averaged across the whole corpus. Also writes eval/results.json
 with per-resume detail, so a before/after parser change can be diffed.
 """
 
+import argparse
 import json
 import os
 import time
@@ -25,6 +26,25 @@ POSITION_FIELDS = ["title", "company", "start_date", "end_date", "is_current"]
 EDUCATION_FIELDS = ["degree", "institution", "graduation_date"]
 MAX_RETRIES = 5
 RETRY_BASE_DELAY_SECONDS = 10
+DEFAULT_MODEL = "gemini-3.5-flash"
+
+
+def parse_args() -> argparse.Namespace:
+    arg_parser = argparse.ArgumentParser(description="Score the parser against the eval corpus.")
+    arg_parser.add_argument(
+        "--model",
+        default=DEFAULT_MODEL,
+        help="Gemini model to evaluate against (default: %(default)s)",
+    )
+    arg_parser.add_argument(
+        "--skip-scored",
+        action="store_true",
+        help=(
+            "Skip resumes already scored under this model in eval/results.json, "
+            "continuing a run that was cut short (e.g. by a quota error)"
+        ),
+    )
+    return arg_parser.parse_args()
 
 
 def normalize(value):
@@ -39,10 +59,10 @@ def build_client() -> genai.Client:
     return genai.Client(api_key=api_key)
 
 
-def parse_with_retry(client: genai.Client, resume_text: str) -> Resume:
+def parse_with_retry(client: genai.Client, resume_text: str, model: str) -> Resume:
     for attempt in range(MAX_RETRIES):
         try:
-            return parse_resume_text(client, resume_text)
+            return parse_resume_text(client, resume_text, model=model)
         except errors.ClientError as e:
             if e.code != 429 or attempt == MAX_RETRIES - 1:
                 raise
@@ -126,30 +146,19 @@ def aggregate_scores(all_scores: list[dict]) -> dict[str, float]:
     return {key: sum(values) / len(values) for key, values in buckets.items()}
 
 
-def main() -> None:
-    client = build_client()
-    resume_paths = sorted(CORPUS_DIR.glob("resume_*.txt"))
-
-    per_resume = []
-    for txt_path in resume_paths:
-        stem = txt_path.stem
-        truth = Resume.model_validate_json((CORPUS_DIR / f"{stem}.json").read_text())
-        predicted = parse_with_retry(client, txt_path.read_text())
-        per_resume.append({"resume": stem, "scores": score_resume(predicted, truth)})
-        print(f"scored {stem}")
-
+def compute_aggregate(per_resume: list[dict]) -> tuple[dict[str, float], float]:
     aggregate = aggregate_scores([r["scores"] for r in per_resume])
     overall = sum(aggregate.values()) / len(aggregate)
+    return aggregate, overall
 
-    print("\nField-level accuracy (averaged across all resumes):")
-    for field, accuracy in sorted(aggregate.items()):
-        print(f"  {field:<24} {accuracy:.1%}")
-    print(f"  {'overall':<24} {overall:.1%}")
 
+def write_results(model: str, per_resume: list[dict]) -> None:
+    aggregate, overall = compute_aggregate(per_resume)
     RESULTS_PATH.write_text(
         json.dumps(
             {
                 "generated_at": datetime.now(UTC).isoformat(),
+                "model": model,
                 "overall": overall,
                 "aggregate": aggregate,
                 "per_resume": per_resume,
@@ -158,6 +167,44 @@ def main() -> None:
         ),
         encoding="utf-8",
     )
+
+
+def load_already_scored(model: str) -> dict[str, dict]:
+    """Resumes already scored under `model` in an existing results.json, keyed
+    by stem. Empty if the file is missing or was scored under a different
+    model — a resumed run must never mix scores from two different models."""
+    if not RESULTS_PATH.exists():
+        return {}
+    data = json.loads(RESULTS_PATH.read_text())
+    if data.get("model") != model:
+        return {}
+    return {entry["resume"]: entry for entry in data["per_resume"]}
+
+
+def main() -> None:
+    args = parse_args()
+    client = build_client()
+    resume_paths = sorted(CORPUS_DIR.glob("resume_*.txt"))
+
+    already_scored = load_already_scored(args.model) if args.skip_scored else {}
+    per_resume = list(already_scored.values())
+
+    for txt_path in resume_paths:
+        stem = txt_path.stem
+        if stem in already_scored:
+            print(f"skipping {stem}  [already scored]")
+            continue
+        truth = Resume.model_validate_json((CORPUS_DIR / f"{stem}.json").read_text())
+        predicted = parse_with_retry(client, txt_path.read_text(), args.model)
+        per_resume.append({"resume": stem, "scores": score_resume(predicted, truth)})
+        print(f"scored {stem}")
+        write_results(args.model, per_resume)
+
+    aggregate, overall = compute_aggregate(per_resume)
+    print("\nField-level accuracy (averaged across all resumes):")
+    for field, accuracy in sorted(aggregate.items()):
+        print(f"  {field:<24} {accuracy:.1%}")
+    print(f"  {'overall':<24} {overall:.1%}")
     print(f"\nwrote {RESULTS_PATH}")
 
 
