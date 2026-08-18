@@ -21,6 +21,14 @@ class ClaimedResume:
     attempts: int
 
 
+@dataclass
+class ResumeStatus:
+    id: int
+    status: Literal["pending", "processing", "done", "failed"]
+    parsed_result: dict | None
+    error: str | None
+
+
 def enqueue(
     conn: psycopg.Connection,
     original_filename: str,
@@ -82,6 +90,18 @@ def mark_done(conn: psycopg.Connection, resume_id: int, parsed_result: dict) -> 
             (Jsonb(parsed_result), resume_id),
         )
     conn.commit()
+
+
+def get_resume(conn: psycopg.Connection, resume_id: int) -> ResumeStatus | None:
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT id, status, parsed_result, error FROM resumes WHERE id = %s",
+            (resume_id,),
+        )
+        row = cur.fetchone()
+    if row is None:
+        return None
+    return ResumeStatus(id=row[0], status=row[1], parsed_result=row[2], error=row[3])
 
 
 def mark_failed(conn: psycopg.Connection, resume_id: int, error: str) -> None:

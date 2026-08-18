@@ -3,33 +3,30 @@
 Last updated: 2026-08-18
 
 ## Current state
-Build order steps 1-4 done, committed, and pushed to origin/main.
+Steps 1-4 done, committed, pushed to origin/main. Step 5 built and
+smoke-tested live, not yet committed.
 
-- `eval/corpus/` + `packages/parser/`: synthetic corpus and pure-library
-  parser (`parse_resume(client, data, file_type) -> Resume`, Gemini
-  structured output, model `gemini-3.5-flash`).
-- `eval/score.py`: field-level accuracy scorer. Baseline **96.6% overall**
-  (measured on `gemini-3.5-flash-lite` as a one-time stopgap — `flash`'s
-  daily quota was exhausted; `parse.py` still targets `flash`; treat as
-  provisional until confirmed on the real model). Weakest fields:
-  `location` 90.0%, `education.graduation_date` 90.5%.
-- Postgres is live on Supabase (free tier; direct host is IPv6-only, so
-  `DATABASE_URL` uses the session pooler endpoint instead).
-  `db/migrations/0001_create_resumes.sql` + `db/migrate.py`: single
-  `resumes` table (file bytes, status, attempts, parsed_result jsonb)
-  doubling as the queue, applied and verified live.
-  `db/jobs.py`: `enqueue`/`claim_next`/`mark_done`/`mark_failed`, using
-  `SELECT ... FOR UPDATE SKIP LOCKED`. Smoke-tested live against Supabase
-  (FIFO order, concurrent-safe skip, empty-queue `None`) — all correct.
+- Parser (`packages/parser/`) targets `gemini-3.5-flash`. Eval baseline
+  is **96.6% overall**, but that number was measured on
+  `gemini-3.5-flash-lite` (a stopgap for exhausted `flash` quota) —
+  still unconfirmed on the real target model.
+- Postgres/Supabase queue (`db/jobs.py`, `db/migrations/`) is live and
+  verified: enqueue, claim (`FOR UPDATE SKIP LOCKED`), done/failed,
+  status lookup.
+- `api/main.py` (FastAPI): `POST /resumes` uploads pdf/docx and
+  enqueues; `GET /resumes/{id}` returns status/result/error. Never
+  calls the LLM.
+- `worker/run.py`: polls the queue, calls `parse_resume`, marks
+  done/failed. Only process that calls the LLM.
+- Verified live end-to-end: upload → `pending` row in Supabase → worker
+  claims it → LLM call hit the still-exhausted `flash` quota → worker
+  correctly marked it `failed` with the error attached. Success path
+  (`mark_done`) is code-reviewed but not yet exercised live.
 
 ## Next up
-1. Re-run `eval/score.py` against real `gemini-3.5-flash` once its daily
-   quota resets, to confirm the baseline holds on the production model.
-2. Build order step 5 — API (FastAPI, enqueues jobs, never calls the LLM
-   directly) plus a worker process to actually drain the queue.
-
-## Known issues
-96.6% baseline was measured on `flash-lite`, not `flash` (quota exhaustion).
-
-## Open questions
-None.
+1. Once the `gemini-3.5-flash` daily quota resets: re-run `eval/score.py`
+   for a confirmed baseline (needs a clean pass — quota is exactly 20
+   requests/day, same as corpus size, so any retry exhausts it), and run
+   the worker once to verify the `mark_done` success path live.
+2. Review and commit step 5 (API + worker).
+3. Step 6 — UI (Next.js/Tailwind). Not before step 6 is reached.
