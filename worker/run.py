@@ -12,6 +12,7 @@ from google import genai
 from parser import parse_resume
 
 from db.jobs import claim_next, mark_done, mark_failed
+from storage import download_resume
 
 POLL_INTERVAL_SECONDS = 5
 
@@ -44,7 +45,12 @@ def run() -> None:
 
         print(f"claimed resume {claimed.id} ({claimed.original_filename})")
         try:
-            resume = parse_resume(client, claimed.file_data, claimed.file_type)
+            # storage_path is the primary read path now; file_data is kept only
+            # as a fallback for any pre-migration rows until it's dropped.
+            file_data = (
+                download_resume(claimed.storage_path) if claimed.storage_path else claimed.file_data
+            )
+            resume = parse_resume(client, file_data, claimed.file_type)
             mark_done(conn, claimed.id, resume.model_dump())
             print(f"done resume {claimed.id}")
         except Exception as e:

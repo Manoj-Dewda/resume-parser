@@ -13,6 +13,7 @@ from fastapi import FastAPI, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from db.jobs import enqueue, get_resume
+from storage import upload_resume as upload_to_storage
 
 load_dotenv()
 
@@ -49,9 +50,10 @@ async def upload_resume(file: UploadFile):
         raise HTTPException(status_code=400, detail="only .pdf and .docx files are supported")
 
     file_data = await file.read()
+    storage_path = upload_to_storage(file_data, file.filename)
 
     with get_connection() as conn:
-        resume_id = enqueue(conn, file.filename, file_type, file_data)
+        resume_id = enqueue(conn, file.filename, file_type, file_data, storage_path)
 
     return {"id": resume_id, "status": "pending"}
 

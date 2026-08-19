@@ -18,6 +18,7 @@ class ClaimedResume:
     original_filename: str
     file_type: Literal["pdf", "docx"]
     file_data: bytes
+    storage_path: str | None
     attempts: int
 
 
@@ -34,15 +35,16 @@ def enqueue(
     original_filename: str,
     file_type: Literal["pdf", "docx"],
     file_data: bytes,
+    storage_path: str,
 ) -> int:
     with conn.cursor() as cur:
         cur.execute(
             """
-            INSERT INTO resumes (original_filename, file_type, file_data)
-            VALUES (%s, %s, %s)
+            INSERT INTO resumes (original_filename, file_type, file_data, storage_path)
+            VALUES (%s, %s, %s, %s)
             RETURNING id
             """,
-            (original_filename, file_type, file_data),
+            (original_filename, file_type, file_data, storage_path),
         )
         resume_id = cur.fetchone()[0]
     conn.commit()
@@ -63,7 +65,7 @@ def claim_next(conn: psycopg.Connection) -> ClaimedResume | None:
                 FOR UPDATE SKIP LOCKED
                 LIMIT 1
             )
-            RETURNING id, original_filename, file_type, file_data, attempts
+            RETURNING id, original_filename, file_type, file_data, storage_path, attempts
             """
         )
         row = cur.fetchone()
@@ -75,7 +77,8 @@ def claim_next(conn: psycopg.Connection) -> ClaimedResume | None:
         original_filename=row[1],
         file_type=row[2],
         file_data=bytes(row[3]),
-        attempts=row[4],
+        storage_path=row[4],
+        attempts=row[5],
     )
 
 
