@@ -1,14 +1,15 @@
 {
-  "generated_at": "2026-08-17T20:30:56.172181+00:00",
-  "overall": 0.9660296225513617,
+  "generated_at": "2026-08-19T07:07:02.473733+00:00",
+  "model": "gemini-3.5-flash",
+  "overall": 0.9704889313584967,
   "aggregate": {
     "name": 1.0,
     "email": 1.0,
     "phone": 1.0,
     "location": 0.9,
     "skills_f1": 1.0,
-    "position.title": 0.9565217391304348,
-    "position.company": 0.927536231884058,
+    "position.title": 1.0,
+    "position.company": 0.9420289855072463,
     "position.start_date": 0.927536231884058,
     "position.end_date": 0.9420289855072463,
     "position.is_current": 1.0,
@@ -300,9 +301,9 @@
           true
         ],
         "position.company": [
-          true,
-          true,
-          true
+          false,
+          false,
+          false
         ],
         "position.start_date": [
           true,
@@ -442,9 +443,9 @@
           true
         ],
         "position.company": [
-          false,
-          false,
-          false
+          true,
+          true,
+          true
         ],
         "position.start_date": [
           true,
@@ -624,12 +625,12 @@
         "skills_f1": 1.0,
         "position.title": [
           true,
-          false,
-          false,
-          false
+          true,
+          true,
+          true
         ],
         "position.company": [
-          false,
+          true,
           true,
           true,
           true
