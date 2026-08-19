@@ -3,8 +3,8 @@
 Last updated: 2026-08-20
 
 ## Current state
-Steps 1-6 built and committed (latest storage change not yet pushed).
-Full pipeline verified end-to-end live, including the success path.
+Steps 1-6 built, committed, and pushed to origin/main. Full pipeline
+verified end-to-end live, including the success path.
 
 - Parser (`packages/parser/`) targets `gemini-3.5-flash`. Eval baseline
   is **confirmed on the real model: 97.0% overall**. Weakest fields:
@@ -42,9 +42,39 @@ Full pipeline verified end-to-end live, including the success path.
   "stuck"/"failed to fetch" bugs more than once.
 
 ## Next up
-1. Decide when to cut over `file_data`: make it nullable, stop writing
-   it, eventually drop the column — intentionally deferred until the
-   storage_path path is proven out further.
-2. Search (hybrid keyword + semantic) — not started. Core to the
-   project's pitch but no build-order step or design yet.
-3. Step 7 — deploy.
+
+### 1. `file_data` cutover — keep-until / delete-when criteria
+Right now every upload still dual-writes: the full binary goes to both
+`file_data` (Postgres) and Storage (`storage_path`). That's deliberate,
+not forgotten — `file_data` is the rollback safety net while
+`storage_path` is new and only lightly exercised (one live test so far).
+
+**Keep `file_data` (don't touch it) until all of these hold:**
+- `storage_path` has been exercised across several more real uploads,
+  covering both `.pdf` and `.docx`, with no download/parse failures
+  traceable to Storage itself (a Gemini-side failure like a 429/503 is
+  fine and unrelated — this is specifically about the Storage read path).
+- No job in the table predates the migration and still lacks a
+  `storage_path` — check via `SELECT count(*) FROM resumes WHERE
+  storage_path IS NULL`; should be 0 before cutting over.
+- The worker's `claimed.file_data` fallback branch (used only when
+  `storage_path` is absent) has had a chance to sit unused for a while,
+  confirming nothing still depends on it.
+
+**Cutover, once those hold — in this order, each as its own step:**
+1. Stop writing `file_data` in `api/main.py`'s `enqueue` call.
+2. New migration: `ALTER TABLE resumes ALTER COLUMN file_data DROP NOT NULL`.
+3. Verify a real upload still works end-to-end with `file_data` no
+   longer populated for new rows.
+4. Only after that's proven out: a final migration to `DROP COLUMN
+   file_data` entirely, and delete the now-dead fallback branch in
+   `worker/run.py`.
+
+Do not skip straight to step 4. Each step should be its own reviewed
+change, not one big diff — this is exactly the kind of cutover where
+"looked fine in the diff" and "actually fine in production" can diverge.
+
+### 2. Other next steps
+- Search (hybrid keyword + semantic) — not started. Core to the
+  project's pitch but no build-order step or design yet.
+- Step 7 — deploy.
