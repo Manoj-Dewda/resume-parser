@@ -40,6 +40,7 @@ export default function Home() {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [resume, setResume] = useState<ResumeStatus | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -56,8 +57,7 @@ export default function Home() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const file = fileInputRef.current?.files?.[0];
-    if (!file) return;
+    if (!selectedFile) return;
 
     setUploading(true);
     setUploadError(null);
@@ -65,7 +65,7 @@ export default function Home() {
 
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", selectedFile);
       const response = await fetch(`${API_URL}/resumes`, {
         method: "POST",
         body: formData,
@@ -98,8 +98,19 @@ export default function Home() {
             ref={fileInputRef}
             type="file"
             accept=".pdf,.docx"
-            className="flex-1 text-sm text-zinc-600 dark:text-zinc-400"
+            className="sr-only"
+            onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)}
           />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="rounded-full border border-zinc-300 px-4 py-2 text-sm text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"
+          >
+            Choose file
+          </button>
+          <span className="flex-1 text-sm text-zinc-600 dark:text-zinc-400">
+            {selectedFile ? selectedFile.name : "No file chosen"}
+          </span>
           <button
             type="submit"
             disabled={uploading}
