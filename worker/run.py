@@ -18,7 +18,14 @@ from psycopg_pool import ConnectionPool
 from db.jobs import claim_next, mark_done, mark_failed, reap_stale_jobs, requeue
 from storage import download_resume
 
-POLL_INTERVAL_SECONDS = 5
+# A job that arrives right after a poll_loop checks an empty queue waits up
+# to this long before the next check picks it up — pure idle-latency, not a
+# throughput concern (a busy queue is drained continuously, this only
+# affects the "queue was empty, one job just landed" case). 2s halves the
+# old 5s worst case without polling aggressively enough to load Supabase for
+# no reason; go lower (down to ~1s) if lower latency matters more than the
+# extra query volume, but don't go to 0 — that's an unbounded query loop.
+POLL_INTERVAL_SECONDS = float(os.environ.get("POLL_INTERVAL_SECONDS", "2"))
 MAX_PARSE_ATTEMPTS = 3
 RETRY_BASE_DELAY_SECONDS = 5
 
