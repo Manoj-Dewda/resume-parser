@@ -43,6 +43,7 @@ export default function Home() {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [resume, setResume] = useState<ResumeStatus | null>(null);
+  const [pollNotice, setPollNotice] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -51,8 +52,42 @@ export default function Home() {
       return;
     }
     const timer = setInterval(async () => {
-      const response = await fetch(`${API_URL}/resumes/${resume.id}`);
-      const data: ResumeStatus = await response.json();
+      let response: Response;
+      try {
+        response = await fetch(`${API_URL}/resumes/${resume.id}`);
+      } catch {
+        // Network error (offline, connection refused, etc.) — transient by
+        // nature, so just try again next tick rather than tearing down the
+        // poll or showing a broken state.
+        setPollNotice("Connection lost, retrying...");
+        return;
+      }
+
+      if (response.status === 404) {
+        // The resume genuinely doesn't exist — not transient, retrying
+        // forever won't fix it, so stop polling and say so plainly instead
+        // of silently rendering nothing.
+        setPollNotice(null);
+        setResume((r) => (r ? { ...r, status: "failed", error: "Resume not found" } : r));
+        return;
+      }
+
+      if (!response.ok) {
+        // 5xx or anything else unexpected. Could well be transient, so keep
+        // polling — but don't treat the (possibly not ResumeStatus-shaped)
+        // body as a valid parsed result just because a response arrived.
+        setPollNotice(`Server error (${response.status}), retrying...`);
+        return;
+      }
+
+      let data: ResumeStatus;
+      try {
+        data = await response.json();
+      } catch {
+        setPollNotice("Received an invalid response, retrying...");
+        return;
+      }
+      setPollNotice(null);
       setResume(data);
     }, POLL_INTERVAL_MS);
     return () => clearInterval(timer);
@@ -65,6 +100,7 @@ export default function Home() {
     setUploading(true);
     setUploadError(null);
     setResume(null);
+    setPollNotice(null);
 
     try {
       const formData = new FormData();
@@ -125,15 +161,26 @@ export default function Home() {
 
         {uploadError && <p className="text-sm text-red-600">{uploadError}</p>}
 
-        {resume && <ResumeStatusView resume={resume} />}
+        {resume && <ResumeStatusView resume={resume} pollNotice={pollNotice} />}
       </main>
     </div>
   );
 }
 
-function ResumeStatusView({ resume }: { resume: ResumeStatus }) {
+function ResumeStatusView({
+  resume,
+  pollNotice,
+}: {
+  resume: ResumeStatus;
+  pollNotice: string | null;
+}) {
   if (resume.status === "pending" || resume.status === "processing") {
-    return <p className="text-sm text-zinc-600 dark:text-zinc-400">Parsing your resume...</p>;
+    return (
+      <div className="flex flex-col gap-1">
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">Parsing your resume...</p>
+        {pollNotice && <p className="text-xs text-amber-600">{pollNotice}</p>}
+      </div>
+    );
   }
 
   if (resume.status === "failed") {
