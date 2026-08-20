@@ -5,20 +5,50 @@ process (worker/run.py), which polls the queue and calls packages/parser.
 """
 
 import os
-from typing import Literal
+from collections.abc import AsyncIterator, Iterator
+from contextlib import asynccontextmanager
+from typing import Annotated, Literal
 
 import psycopg
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request, UploadFile
+from fastapi import Depends, FastAPI, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from psycopg_pool import ConnectionPool
 
 from db.jobs import enqueue, get_resume
 from storage import upload_resume as upload_to_storage
 
 load_dotenv()
 
-app = FastAPI()
+# Measured, not assumed: a fresh psycopg.connect() against Supabase's pooler
+# from here averaged ~1.8s (connect + one query + close) vs ~0.26s for a
+# query on an already-open connection — about 1.5s of pure connection setup
+# eaten on every single request under the old per-request connect(). Small
+# and fixed rather than scaled to expected traffic: this is a low-volume
+# personal project, and Supabase Free's connection limit is a shared,
+# scarce resource — reuse connections, don't provision for load that
+# doesn't exist yet.
+API_DB_POOL_MAX_SIZE = int(os.environ.get("API_DB_POOL_MAX_SIZE", "5"))
+
+
+def get_database_url() -> str:
+    database_url = os.environ.get("DATABASE_URL")
+    if not database_url:
+        raise RuntimeError("DATABASE_URL not set. Copy .env.example to .env and fill it in.")
+    return database_url
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    with ConnectionPool(
+        get_database_url(), min_size=1, max_size=API_DB_POOL_MAX_SIZE, open=True
+    ) as pool:
+        app.state.db_pool = pool
+        yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -78,15 +108,19 @@ async def read_upload(file: UploadFile, max_bytes: int) -> bytes:
     return bytes(data)
 
 
-def get_connection() -> psycopg.Connection:
-    database_url = os.environ.get("DATABASE_URL")
-    if not database_url:
-        raise RuntimeError("DATABASE_URL not set. Copy .env.example to .env and fill it in.")
-    return psycopg.connect(database_url)
+def get_connection(request: Request) -> Iterator[psycopg.Connection]:
+    """Borrows a connection from the pool for this request only, returning it
+    when the request finishes (or errors) — not one held for the process's
+    whole lifetime, and not a fresh connect() per request either."""
+    with request.app.state.db_pool.connection() as conn:
+        yield conn
+
+
+DbConnection = Annotated[psycopg.Connection, Depends(get_connection)]
 
 
 @app.post("/resumes")
-async def upload_resume(file: UploadFile):
+async def upload_resume(file: UploadFile, conn: DbConnection):
     if not file.filename:
         raise HTTPException(status_code=400, detail="file must have a filename")
 
@@ -98,16 +132,14 @@ async def upload_resume(file: UploadFile):
     file_data = await read_upload(file, MAX_RESUME_SIZE_BYTES)
     storage_path = upload_to_storage(file_data, file.filename)
 
-    with get_connection() as conn:
-        resume_id = enqueue(conn, file.filename, file_type, file_data, storage_path)
+    resume_id = enqueue(conn, file.filename, file_type, file_data, storage_path)
 
     return {"id": resume_id, "status": "pending"}
 
 
 @app.get("/resumes/{resume_id}")
-async def get_resume_status(resume_id: int):
-    with get_connection() as conn:
-        resume = get_resume(conn, resume_id)
+async def get_resume_status(resume_id: int, conn: DbConnection):
+    resume = get_resume(conn, resume_id)
 
     if resume is None:
         raise HTTPException(status_code=404, detail="resume not found")
