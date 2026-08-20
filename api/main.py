@@ -7,6 +7,7 @@ process (worker/run.py), which polls the queue and calls packages/parser.
 import os
 from collections.abc import AsyncIterator, Iterator
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 from typing import Annotated, Literal
 
 import psycopg
@@ -16,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from psycopg_pool import ConnectionPool
 
-from db.jobs import enqueue, get_resume
+from db.jobs import enqueue, get_resume, latest_worker_heartbeat
 from storage import upload_resume as upload_to_storage
 
 load_dotenv()
@@ -30,6 +31,17 @@ load_dotenv()
 # scarce resource — reuse connections, don't provision for load that
 # doesn't exist yet.
 API_DB_POOL_MAX_SIZE = int(os.environ.get("API_DB_POOL_MAX_SIZE", "5"))
+
+# A worker thread heartbeats once per outer poll loop iteration (see
+# worker/run.py) — every ~POLL_INTERVAL_SECONDS while idle, or however long
+# the current job takes while busy. 120s is generous relative to a normal
+# job (a Gemini call plus parse_with_retry's inline backoff is on the order
+# of seconds, rarely more than its ~15s worst-case backoff), so a live
+# worker won't flap this stale, while still surfacing a genuinely dead or
+# hung thread (no request timeout is set, so a hang is indefinite) well
+# before PROCESSING_TIMEOUT_SECONDS's 10-minute DB-level recovery would ever
+# act on it.
+WORKER_HEARTBEAT_STALE_SECONDS = int(os.environ.get("WORKER_HEARTBEAT_STALE_SECONDS", "120"))
 
 
 def get_database_url() -> str:
@@ -122,6 +134,24 @@ DbConnection = Annotated[psycopg.Connection, Depends(get_connection)]
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/health/worker")
+async def worker_health(conn: DbConnection) -> JSONResponse:
+    """Separate from /health: the API can be up while the worker is dead,
+    crashed, or hung on a request with no timeout, and /health alone can't
+    tell the two apart."""
+    last = latest_worker_heartbeat(conn)
+    if last is None:
+        return JSONResponse(status_code=503, content={"status": "no worker has reported in yet"})
+
+    age_seconds = (datetime.now(UTC) - last).total_seconds()
+    if age_seconds > WORKER_HEARTBEAT_STALE_SECONDS:
+        return JSONResponse(
+            status_code=503,
+            content={"status": "stale", "last_heartbeat_seconds_ago": age_seconds},
+        )
+    return JSONResponse(content={"status": "ok", "last_heartbeat_seconds_ago": age_seconds})
 
 
 @app.post("/resumes")

@@ -6,6 +6,7 @@ poll concurrently without ever claiming the same resume twice.
 """
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Literal
 
 import psycopg
@@ -155,6 +156,29 @@ def requeue(conn: psycopg.Connection, resume_id: int) -> None:
             (resume_id,),
         )
     conn.commit()
+
+
+def heartbeat(conn: psycopg.Connection, worker_id: int) -> None:
+    """Upserted by a worker thread once per poll loop iteration. A thread
+    stuck on a hung request (Gemini sets no request timeout) simply stops
+    advancing its row, which is the staleness signal /health/worker reads."""
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            INSERT INTO worker_heartbeats (worker_id, updated_at)
+            VALUES (%s, now())
+            ON CONFLICT (worker_id) DO UPDATE SET updated_at = now()
+            """,
+            (worker_id,),
+        )
+    conn.commit()
+
+
+def latest_worker_heartbeat(conn: psycopg.Connection) -> datetime | None:
+    with conn.cursor() as cur:
+        cur.execute("SELECT max(updated_at) FROM worker_heartbeats")
+        row = cur.fetchone()
+    return row[0] if row else None
 
 
 def mark_failed(conn: psycopg.Connection, resume_id: int, error: str) -> None:

@@ -15,7 +15,7 @@ from google.genai import errors
 from parser import Resume, parse_resume
 from psycopg_pool import ConnectionPool
 
-from db.jobs import claim_next, mark_done, mark_failed, reap_stale_jobs, requeue
+from db.jobs import claim_next, heartbeat, mark_done, mark_failed, reap_stale_jobs, requeue
 from storage import download_resume
 
 # A job that arrives right after a poll_loop checks an empty queue waits up
@@ -91,6 +91,12 @@ WORKER_CONCURRENCY = int(os.environ.get("WORKER_CONCURRENCY", "1"))
 DB_POOL_MIN_SIZE = 1
 DB_POOL_MAX_SIZE = WORKER_CONCURRENCY
 
+# How often a poll loop writes its heartbeat, in effect: once per outer loop
+# iteration, i.e. immediately after finishing a job or after each idle
+# POLL_INTERVAL_SECONDS sleep. /health/worker (api/main.py) uses
+# WORKER_HEARTBEAT_STALE_SECONDS to judge whether that's still arriving on
+# schedule.
+
 
 def is_transient(e: Exception) -> bool:
     """Rate limits, known-transient server errors, and network timeouts/
@@ -142,6 +148,9 @@ def poll_loop(worker_id: int, pool: ConnectionPool) -> None:
 
     log("started, polling for jobs")
     while True:
+        with pool.connection() as conn:
+            heartbeat(conn, worker_id)
+
         with pool.connection() as conn:
             recovered, reaped_failed = reap_stale_jobs(
                 conn, PROCESSING_TIMEOUT_SECONDS, MAX_ATTEMPTS
