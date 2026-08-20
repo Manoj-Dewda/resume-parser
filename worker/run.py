@@ -14,12 +14,25 @@ from google import genai
 from google.genai import errors
 from parser import Resume, parse_resume
 
-from db.jobs import claim_next, mark_done, mark_failed, requeue
+from db.jobs import claim_next, mark_done, mark_failed, reap_stale_jobs, requeue
 from storage import download_resume
 
 POLL_INTERVAL_SECONDS = 5
 MAX_PARSE_ATTEMPTS = 3
 RETRY_BASE_DELAY_SECONDS = 5
+
+# Recovers jobs stuck in 'processing' because their worker died mid-job
+# (crashed, OOM-killed, or the process was killed) before it ever reached the
+# except block that normally calls requeue()/mark_failed(). Must be well
+# above how long a legitimate request can take: verified from google-genai's
+# source that it sets NO default timeout on its own HTTP requests
+# (HttpOptions.timeout is None -> timeout=None is passed straight to httpx,
+# which means unbounded) — so there's no SDK-side ceiling to rely on. Worst
+# case for a single claim is parse_with_retry's up to ~15s of inline backoff
+# plus up to MAX_PARSE_ATTEMPTS request durations; 10 minutes is comfortably
+# above any realistic combination of that while still recovering a genuinely
+# dead worker in reasonable time for a low-volume, single-worker setup.
+PROCESSING_TIMEOUT_SECONDS = int(os.environ.get("PROCESSING_TIMEOUT_SECONDS", "600"))
 
 # Bounds queue-level retries via the existing attempts column (incremented
 # once per claim_next call) rather than a separate counter. This is the
@@ -94,6 +107,10 @@ def run() -> None:
 
     print("worker started, polling for jobs")
     while True:
+        recovered, reaped_failed = reap_stale_jobs(conn, PROCESSING_TIMEOUT_SECONDS, MAX_ATTEMPTS)
+        if recovered or reaped_failed:
+            print(f"reaped stale jobs: {recovered} recovered, {reaped_failed} failed")
+
         claimed = claim_next(conn)
         if claimed is None:
             time.sleep(POLL_INTERVAL_SECONDS)

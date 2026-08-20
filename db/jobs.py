@@ -82,6 +82,44 @@ def claim_next(conn: psycopg.Connection) -> ClaimedResume | None:
     )
 
 
+def reap_stale_jobs(
+    conn: psycopg.Connection, timeout_seconds: int, max_attempts: int
+) -> tuple[int, int]:
+    """Recovers jobs stuck in 'processing' because their worker died (crashed,
+    OOM-killed, or hung on a request) without ever reaching the except block
+    in worker/run.py that normally calls requeue()/mark_failed(). A row past
+    the timeout with retries left goes back to 'pending' for another worker
+    to claim; one that's already exhausted attempts is marked failed instead
+    of being recovered forever. Returns (recovered_count, failed_count)."""
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE resumes
+            SET status = 'failed', error = 'worker crashed or timed out repeatedly',
+                updated_at = now()
+            WHERE status = 'processing'
+              AND locked_at < now() - make_interval(secs => %s)
+              AND attempts >= %s
+            """,
+            (timeout_seconds, max_attempts),
+        )
+        failed_count = cur.rowcount
+
+        cur.execute(
+            """
+            UPDATE resumes
+            SET status = 'pending', updated_at = now()
+            WHERE status = 'processing'
+              AND locked_at < now() - make_interval(secs => %s)
+              AND attempts < %s
+            """,
+            (timeout_seconds, max_attempts),
+        )
+        recovered_count = cur.rowcount
+    conn.commit()
+    return recovered_count, failed_count
+
+
 def mark_done(conn: psycopg.Connection, resume_id: int, parsed_result: dict) -> None:
     with conn.cursor() as cur:
         cur.execute(
