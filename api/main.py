@@ -119,6 +119,11 @@ def get_connection(request: Request) -> Iterator[psycopg.Connection]:
 DbConnection = Annotated[psycopg.Connection, Depends(get_connection)]
 
 
+@app.get("/health")
+async def health() -> dict[str, str]:
+    return {"status": "ok"}
+
+
 @app.post("/resumes")
 async def upload_resume(file: UploadFile, conn: DbConnection):
     if not file.filename:
