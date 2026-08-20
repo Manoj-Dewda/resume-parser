@@ -9,11 +9,11 @@ import time
 from typing import Literal
 
 import httpx
-import psycopg
 from dotenv import load_dotenv
 from google import genai
 from google.genai import errors
 from parser import Resume, parse_resume
+from psycopg_pool import ConnectionPool
 
 from db.jobs import claim_next, mark_done, mark_failed, reap_stale_jobs, requeue
 from storage import download_resume
@@ -58,17 +58,31 @@ MAX_ATTEMPTS = int(os.environ.get("MAX_ATTEMPTS", "3"))
 RETRYABLE_HTTP_CODES = {408, 429, 500, 502, 503, 504}
 RETRYABLE_NETWORK_ERRORS = (httpx.TimeoutException, httpx.ConnectError)
 
-# Each unit of concurrency is a full poll loop in its own thread, with its
-# own DB connection and Gemini client — psycopg connections aren't safe to
-# share across threads, so this keeps every thread fully independent. Safe
-# to raise: claim_next's SELECT ... FOR UPDATE SKIP LOCKED was already
-# designed for multiple concurrent claimers from day one. NOT safe to raise
-# carelessly: Gemini's free-tier rate limits (we've hit both per-minute 429s
-# and a fully exhausted daily quota this session) and Supabase's connection
-# limits are the real ceiling, not this number. Default of 1 keeps existing
-# behavior unless explicitly opted into. Test 1, 2, 4 and measure actual
-# throughput/error rate before going higher — don't guess a bigger number.
+# Each unit of concurrency is a full poll loop in its own thread. Threads
+# share one small ConnectionPool (below) rather than each holding its own
+# connection forever — a connection open for a thread's whole lifetime can
+# go stale (network blip, Supabase's pooler reaping an idle session) with
+# nothing to detect or recover it; the pool health-checks and reconnects.
+# Each thread still gets its own Gemini client, since that's an HTTP client
+# (its own internal pooling), not a database connection. Safe to raise:
+# claim_next's SELECT ... FOR UPDATE SKIP LOCKED was already designed for
+# multiple concurrent claimers from day one. NOT safe to raise carelessly:
+# Gemini's free-tier rate limits (we've hit both per-minute 429s and a fully
+# exhausted daily quota this session) and Supabase's connection limits are
+# the real ceiling, not this number. Default of 1 keeps existing behavior
+# unless explicitly opted into. Test 1, 2, 4 and measure actual throughput/
+# error rate before going higher — don't guess a bigger number.
 WORKER_CONCURRENCY = int(os.environ.get("WORKER_CONCURRENCY", "1"))
+
+# Sized to WORKER_CONCURRENCY, not a bigger round number: each thread only
+# ever needs one connection checked out at a time (every DB call in
+# poll_loop is a short borrow-use-return, never held across a Gemini call),
+# so there's no benefit to a bigger pool — and Supabase Free's connection
+# ceiling is the exact resource this task said to protect. min_size=1 keeps
+# at least one warm connection instead of paying full connect latency on
+# the very first claim.
+DB_POOL_MIN_SIZE = 1
+DB_POOL_MAX_SIZE = WORKER_CONCURRENCY
 
 
 def is_transient(e: Exception) -> bool:
@@ -99,11 +113,11 @@ def parse_with_retry(
     raise AssertionError("unreachable")
 
 
-def build_connection() -> psycopg.Connection:
+def get_database_url() -> str:
     database_url = os.environ.get("DATABASE_URL")
     if not database_url:
         raise RuntimeError("DATABASE_URL not set. Copy .env.example to .env and fill it in.")
-    return psycopg.connect(database_url)
+    return database_url
 
 
 def build_client() -> genai.Client:
@@ -113,20 +127,23 @@ def build_client() -> genai.Client:
     return genai.Client(api_key=api_key)
 
 
-def poll_loop(worker_id: int) -> None:
+def poll_loop(worker_id: int, pool: ConnectionPool) -> None:
     def log(msg: str) -> None:
         print(f"[worker {worker_id}] {msg}")
 
-    conn = build_connection()
     client = build_client()
 
     log("started, polling for jobs")
     while True:
-        recovered, reaped_failed = reap_stale_jobs(conn, PROCESSING_TIMEOUT_SECONDS, MAX_ATTEMPTS)
+        with pool.connection() as conn:
+            recovered, reaped_failed = reap_stale_jobs(
+                conn, PROCESSING_TIMEOUT_SECONDS, MAX_ATTEMPTS
+            )
         if recovered or reaped_failed:
             log(f"reaped stale jobs: {recovered} recovered, {reaped_failed} failed")
 
-        claimed = claim_next(conn)
+        with pool.connection() as conn:
+            claimed = claim_next(conn)
         if claimed is None:
             time.sleep(POLL_INTERVAL_SECONDS)
             continue
@@ -139,29 +156,38 @@ def poll_loop(worker_id: int) -> None:
                 download_resume(claimed.storage_path) if claimed.storage_path else claimed.file_data
             )
             resume = parse_with_retry(client, file_data, claimed.file_type)
-            mark_done(conn, claimed.id, resume.model_dump())
+            with pool.connection() as conn:
+                mark_done(conn, claimed.id, resume.model_dump())
             log(f"done resume {claimed.id}")
         except Exception as e:
             if is_transient(e) and claimed.attempts < MAX_ATTEMPTS:
-                requeue(conn, claimed.id)
+                with pool.connection() as conn:
+                    requeue(conn, claimed.id)
                 progress = f"{claimed.attempts}/{MAX_ATTEMPTS}"
                 log(f"requeued resume {claimed.id} (attempt {progress}): {e}")
             else:
-                mark_failed(conn, claimed.id, str(e))
+                with pool.connection() as conn:
+                    mark_failed(conn, claimed.id, str(e))
                 log(f"failed resume {claimed.id} after {claimed.attempts} attempt(s): {e}")
 
 
 def run() -> None:
     load_dotenv()
     print(f"starting {WORKER_CONCURRENCY} worker thread(s)")
-    threads = [
-        threading.Thread(target=poll_loop, args=(i,), daemon=True)
-        for i in range(WORKER_CONCURRENCY)
-    ]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
+    with ConnectionPool(
+        get_database_url(),
+        min_size=DB_POOL_MIN_SIZE,
+        max_size=DB_POOL_MAX_SIZE,
+        open=True,
+    ) as pool:
+        threads = [
+            threading.Thread(target=poll_loop, args=(i, pool), daemon=True)
+            for i in range(WORKER_CONCURRENCY)
+        ]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
 
 
 if __name__ == "__main__":
