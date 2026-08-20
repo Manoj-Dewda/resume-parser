@@ -3,7 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const POLL_INTERVAL_MS = 2000;
+// Configurable, but this stays simple polling on purpose — no WebSockets.
+// At this app's scale, polling is sufficient; the interval is just how
+// responsive the UI feels while a job is in flight, not a scalability knob.
+const POLL_INTERVAL_MS = Number(process.env.NEXT_PUBLIC_POLL_INTERVAL_MS) || 2000;
 
 type Position = {
   title: string;
