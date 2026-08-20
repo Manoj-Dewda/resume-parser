@@ -27,10 +27,33 @@ verified end-to-end live, including the success path.
   live: upload lands in the Storage bucket at the right size, worker
   downloads from there (not the DB blob) and parses correctly.
 - `api/main.py` (FastAPI, CORS enabled for `localhost:3000`):
-  `POST /resumes` uploads pdf/docx (now to Storage) and enqueues;
+  `POST /resumes` uploads pdf/docx (now to Storage) and enqueues, capped
+  at `MAX_RESUME_SIZE_MB` (default 5) — rejected via a Content-Length
+  check before the body is even parsed, plus a chunked-read backstop for
+  requests without one, so an oversized upload never gets fully buffered.
   `GET /resumes/{id}` returns status/result/error. Never calls the LLM.
 - `worker/run.py`: polls the queue, downloads from Storage, calls
   `parse_resume`, marks done/failed. Only process that calls the LLM.
+  Now has three layers of resilience, all live-verified with real rows:
+  inline exponential-backoff retry for transient errors within one claim
+  (`parse_with_retry`, classification grounded in `google-genai`'s own
+  source, not guessed — e.g. `501` is deliberately excluded from retry
+  even though it's a 5xx, since the SDK itself treats it as permanent);
+  queue-level retry reusing the existing `attempts` column
+  (`MAX_ATTEMPTS`, default 3 — no new counter added) for failures that
+  survive that; and stale-lock recovery reusing the existing `locked_at`
+  column (`reap_stale_jobs`, `PROCESSING_TIMEOUT_SECONDS`, default 600s)
+  for a worker that crashes or hangs mid-job. Concurrency is now
+  configurable (`WORKER_CONCURRENCY`, default 1) — each unit is a full
+  poll loop in its own thread with its own DB connection and Gemini
+  client. Measured live with real jobs through the full stack:
+  4 jobs took 37.4s at concurrency 1 vs 26.8s at concurrency 4.
+  **Discovered in that same test: `gemini-3.5-flash`'s free tier caps at
+  5 requests/minute** (seen verbatim in a 429's `quotaValue`) — at
+  concurrency 4 we already hit it (2 of 4 requests got rate-limited and
+  had to retry), so 4 looks close to the practical ceiling on this tier,
+  not just a conservative starting point. Retries absorbed it cleanly;
+  all 4 jobs still completed.
 - `web/` (Next.js + Tailwind): upload page verified live in a real
   browser — pending/polling state and the completed parsed-result view
   both render correctly, zero console/CORS errors. File-input bug found

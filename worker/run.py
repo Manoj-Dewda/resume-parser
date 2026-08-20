@@ -4,6 +4,7 @@ The only process that calls the LLM — the API only ever enqueues.
 """
 
 import os
+import threading
 import time
 from typing import Literal
 
@@ -57,6 +58,18 @@ MAX_ATTEMPTS = int(os.environ.get("MAX_ATTEMPTS", "3"))
 RETRYABLE_HTTP_CODES = {408, 429, 500, 502, 503, 504}
 RETRYABLE_NETWORK_ERRORS = (httpx.TimeoutException, httpx.ConnectError)
 
+# Each unit of concurrency is a full poll loop in its own thread, with its
+# own DB connection and Gemini client — psycopg connections aren't safe to
+# share across threads, so this keeps every thread fully independent. Safe
+# to raise: claim_next's SELECT ... FOR UPDATE SKIP LOCKED was already
+# designed for multiple concurrent claimers from day one. NOT safe to raise
+# carelessly: Gemini's free-tier rate limits (we've hit both per-minute 429s
+# and a fully exhausted daily quota this session) and Supabase's connection
+# limits are the real ceiling, not this number. Default of 1 keeps existing
+# behavior unless explicitly opted into. Test 1, 2, 4 and measure actual
+# throughput/error rate before going higher — don't guess a bigger number.
+WORKER_CONCURRENCY = int(os.environ.get("WORKER_CONCURRENCY", "1"))
+
 
 def is_transient(e: Exception) -> bool:
     """Rate limits, known-transient server errors, and network timeouts/
@@ -100,23 +113,25 @@ def build_client() -> genai.Client:
     return genai.Client(api_key=api_key)
 
 
-def run() -> None:
-    load_dotenv()
+def poll_loop(worker_id: int) -> None:
+    def log(msg: str) -> None:
+        print(f"[worker {worker_id}] {msg}")
+
     conn = build_connection()
     client = build_client()
 
-    print("worker started, polling for jobs")
+    log("started, polling for jobs")
     while True:
         recovered, reaped_failed = reap_stale_jobs(conn, PROCESSING_TIMEOUT_SECONDS, MAX_ATTEMPTS)
         if recovered or reaped_failed:
-            print(f"reaped stale jobs: {recovered} recovered, {reaped_failed} failed")
+            log(f"reaped stale jobs: {recovered} recovered, {reaped_failed} failed")
 
         claimed = claim_next(conn)
         if claimed is None:
             time.sleep(POLL_INTERVAL_SECONDS)
             continue
 
-        print(f"claimed resume {claimed.id} ({claimed.original_filename})")
+        log(f"claimed resume {claimed.id} ({claimed.original_filename})")
         try:
             # storage_path is the primary read path now; file_data is kept only
             # as a fallback for any pre-migration rows until it's dropped.
@@ -125,15 +140,28 @@ def run() -> None:
             )
             resume = parse_with_retry(client, file_data, claimed.file_type)
             mark_done(conn, claimed.id, resume.model_dump())
-            print(f"done resume {claimed.id}")
+            log(f"done resume {claimed.id}")
         except Exception as e:
             if is_transient(e) and claimed.attempts < MAX_ATTEMPTS:
                 requeue(conn, claimed.id)
                 progress = f"{claimed.attempts}/{MAX_ATTEMPTS}"
-                print(f"requeued resume {claimed.id} (attempt {progress}): {e}")
+                log(f"requeued resume {claimed.id} (attempt {progress}): {e}")
             else:
                 mark_failed(conn, claimed.id, str(e))
-                print(f"failed resume {claimed.id} after {claimed.attempts} attempt(s): {e}")
+                log(f"failed resume {claimed.id} after {claimed.attempts} attempt(s): {e}")
+
+
+def run() -> None:
+    load_dotenv()
+    print(f"starting {WORKER_CONCURRENCY} worker thread(s)")
+    threads = [
+        threading.Thread(target=poll_loop, args=(i,), daemon=True)
+        for i in range(WORKER_CONCURRENCY)
+    ]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
 
 
 if __name__ == "__main__":
