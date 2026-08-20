@@ -107,6 +107,18 @@ def get_resume(conn: psycopg.Connection, resume_id: int) -> ResumeStatus | None:
     return ResumeStatus(id=row[0], status=row[1], parsed_result=row[2], error=row[3])
 
 
+def requeue(conn: psycopg.Connection, resume_id: int) -> None:
+    """Puts a resume back to 'pending' after a transient failure, so a later
+    claim_next picks it up again. attempts isn't touched here — it's already
+    incremented once per claim_next call, which is what bounds the retry."""
+    with conn.cursor() as cur:
+        cur.execute(
+            "UPDATE resumes SET status = 'pending', updated_at = now() WHERE id = %s",
+            (resume_id,),
+        )
+    conn.commit()
+
+
 def mark_failed(conn: psycopg.Connection, resume_id: int, error: str) -> None:
     with conn.cursor() as cur:
         cur.execute(

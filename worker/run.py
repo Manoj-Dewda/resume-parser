@@ -14,21 +14,47 @@ from google import genai
 from google.genai import errors
 from parser import Resume, parse_resume
 
-from db.jobs import claim_next, mark_done, mark_failed
+from db.jobs import claim_next, mark_done, mark_failed, requeue
 from storage import download_resume
 
 POLL_INTERVAL_SECONDS = 5
 MAX_PARSE_ATTEMPTS = 3
 RETRY_BASE_DELAY_SECONDS = 5
 
+# Bounds queue-level retries via the existing attempts column (incremented
+# once per claim_next call) rather than a separate counter. This is the
+# retry layer for failures that survive parse_with_retry's inline attempts —
+# e.g. a rate limit that hasn't cleared in 15s, or a fresh transient error on
+# a later claim. Default of 3 chosen from what we've actually observed from
+# Gemini: brief 503 "high demand" spikes clear within seconds to low minutes
+# (parse_with_retry's inline backoff plus a couple of requeue rounds covers
+# that), while sustained exhaustion (e.g. the daily free-tier quota) won't
+# clear in any of these rounds regardless of the count — 3 fails promptly
+# and visibly instead of quietly retrying something that can't succeed soon.
+MAX_ATTEMPTS = int(os.environ.get("MAX_ATTEMPTS", "3"))
+
+# Matches google-genai's own definition of retryable failures (see
+# _RETRY_HTTP_STATUS_CODES and _HTTPX_TRANSIENT_EXC in the installed
+# google.genai._api_client) rather than a blanket >=500 — e.g. 501 Not
+# Implemented is a permanent condition, not a transient one, so it's
+# deliberately excluded even though it's a 5xx. The SDK does zero retries of
+# its own by default (confirmed: genai.Client() with no retry_options means
+# every failure reaches this code on the first attempt), so this is the only
+# retry layer in effect.
+RETRYABLE_HTTP_CODES = {408, 429, 500, 502, 503, 504}
+RETRYABLE_NETWORK_ERRORS = (httpx.TimeoutException, httpx.ConnectError)
+
 
 def is_transient(e: Exception) -> bool:
-    """Rate limits, server-side errors, and network blips are worth retrying.
-    Anything else (bad request, auth, a parsing/schema error) will just fail
-    the same way again, so don't burn retries on it."""
+    """Rate limits, known-transient server errors, and network timeouts/
+    connection failures are worth retrying. Anything else — invalid API key,
+    bad request, a document Gemini permanently rejects, a schema/parsing
+    failure — will just fail the same way again, so don't burn retries on it.
+    Verified empirically: an invalid API key raises ClientError(code=400),
+    which is correctly non-retryable here."""
     if isinstance(e, errors.APIError):
-        return e.code == 429 or e.code >= 500
-    return isinstance(e, httpx.TransportError)
+        return e.code in RETRYABLE_HTTP_CODES
+    return isinstance(e, RETRYABLE_NETWORK_ERRORS)
 
 
 def parse_with_retry(
@@ -84,8 +110,13 @@ def run() -> None:
             mark_done(conn, claimed.id, resume.model_dump())
             print(f"done resume {claimed.id}")
         except Exception as e:
-            mark_failed(conn, claimed.id, str(e))
-            print(f"failed resume {claimed.id}: {e}")
+            if is_transient(e) and claimed.attempts < MAX_ATTEMPTS:
+                requeue(conn, claimed.id)
+                progress = f"{claimed.attempts}/{MAX_ATTEMPTS}"
+                print(f"requeued resume {claimed.id} (attempt {progress}): {e}")
+            else:
+                mark_failed(conn, claimed.id, str(e))
+                print(f"failed resume {claimed.id} after {claimed.attempts} attempt(s): {e}")
 
 
 if __name__ == "__main__":
