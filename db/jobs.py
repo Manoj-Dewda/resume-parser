@@ -21,6 +21,8 @@ class ClaimedResume:
     file_data: bytes
     storage_path: str | None
     attempts: int
+    created_at: datetime
+    locked_at: datetime
 
 
 @dataclass
@@ -29,6 +31,18 @@ class ResumeStatus:
     status: Literal["pending", "processing", "done", "failed"]
     parsed_result: dict | None
     error: str | None
+
+
+@dataclass
+class QueueMetrics:
+    pending: int
+    processing: int
+    done: int
+    failed: int
+    retried: int
+    avg_processing_seconds: float | None
+    min_processing_seconds: float | None
+    max_processing_seconds: float | None
 
 
 def enqueue(
@@ -66,7 +80,8 @@ def claim_next(conn: psycopg.Connection) -> ClaimedResume | None:
                 FOR UPDATE SKIP LOCKED
                 LIMIT 1
             )
-            RETURNING id, original_filename, file_type, file_data, storage_path, attempts
+            RETURNING id, original_filename, file_type, file_data, storage_path, attempts,
+                      created_at, locked_at
             """
         )
         row = cur.fetchone()
@@ -80,6 +95,8 @@ def claim_next(conn: psycopg.Connection) -> ClaimedResume | None:
         file_data=bytes(row[3]),
         storage_path=row[4],
         attempts=row[5],
+        created_at=row[6],
+        locked_at=row[7],
     )
 
 
@@ -179,6 +196,40 @@ def latest_worker_heartbeat(conn: psycopg.Connection) -> datetime | None:
         cur.execute("SELECT max(updated_at) FROM worker_heartbeats")
         row = cur.fetchone()
     return row[0] if row else None
+
+
+def get_queue_metrics(conn: psycopg.Connection) -> QueueMetrics:
+    """Aggregates queue depth, throughput, and retry stats from columns that
+    already exist — no separate metrics table or timestamps. Processing
+    duration is derived as updated_at - locked_at on 'done' rows (locked_at
+    is set once, at claim time, and never touched again while processing;
+    updated_at is bumped by the mark_done that ends it)."""
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT
+                count(*) FILTER (WHERE status = 'pending'),
+                count(*) FILTER (WHERE status = 'processing'),
+                count(*) FILTER (WHERE status = 'done'),
+                count(*) FILTER (WHERE status = 'failed'),
+                count(*) FILTER (WHERE attempts > 1),
+                avg(extract(epoch FROM updated_at - locked_at)) FILTER (WHERE status = 'done'),
+                min(extract(epoch FROM updated_at - locked_at)) FILTER (WHERE status = 'done'),
+                max(extract(epoch FROM updated_at - locked_at)) FILTER (WHERE status = 'done')
+            FROM resumes
+            """
+        )
+        row = cur.fetchone()
+    return QueueMetrics(
+        pending=row[0],
+        processing=row[1],
+        done=row[2],
+        failed=row[3],
+        retried=row[4],
+        avg_processing_seconds=float(row[5]) if row[5] is not None else None,
+        min_processing_seconds=float(row[6]) if row[6] is not None else None,
+        max_processing_seconds=float(row[7]) if row[7] is not None else None,
+    )
 
 
 def mark_failed(conn: psycopg.Connection, resume_id: int, error: str) -> None:

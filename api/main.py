@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from psycopg_pool import ConnectionPool
 
-from db.jobs import enqueue, get_resume, latest_worker_heartbeat
+from db.jobs import enqueue, get_queue_metrics, get_resume, latest_worker_heartbeat
 from storage import upload_resume as upload_to_storage
 
 load_dotenv()
@@ -152,6 +152,26 @@ async def worker_health(conn: DbConnection) -> JSONResponse:
             content={"status": "stale", "last_heartbeat_seconds_ago": age_seconds},
         )
     return JSONResponse(content={"status": "ok", "last_heartbeat_seconds_ago": age_seconds})
+
+
+@app.get("/metrics")
+async def metrics(conn: DbConnection) -> dict:
+    """Answers the operational questions (queue depth, throughput, failure
+    rate, retry rate) from columns the queue already has — no separate
+    metrics store, no new timestamp columns."""
+    m = get_queue_metrics(conn)
+    return {
+        "queued": m.pending,
+        "processing": m.processing,
+        "done": m.done,
+        "failed": m.failed,
+        "retried": m.retried,
+        "processing_seconds": {
+            "avg": m.avg_processing_seconds,
+            "min": m.min_processing_seconds,
+            "max": m.max_processing_seconds,
+        },
+    }
 
 
 @app.post("/resumes")

@@ -6,6 +6,7 @@ The only process that calls the LLM — the API only ever enqueues.
 import os
 import threading
 import time
+from datetime import UTC, datetime
 from typing import Literal
 
 import httpx
@@ -164,7 +165,11 @@ def poll_loop(worker_id: int, pool: ConnectionPool) -> None:
             time.sleep(POLL_INTERVAL_SECONDS)
             continue
 
-        log(f"claimed resume {claimed.id} ({claimed.original_filename})")
+        queue_wait = (claimed.locked_at - claimed.created_at).total_seconds()
+        log(
+            f"claimed resume {claimed.id} ({claimed.original_filename}), "
+            f"queued {queue_wait:.1f}s, attempt {claimed.attempts}/{MAX_ATTEMPTS}"
+        )
         try:
             # storage_path is the primary read path now; file_data is kept only
             # as a fallback for any pre-migration rows until it's dropped.
@@ -172,19 +177,24 @@ def poll_loop(worker_id: int, pool: ConnectionPool) -> None:
                 download_resume(claimed.storage_path) if claimed.storage_path else claimed.file_data
             )
             resume = parse_with_retry(client, file_data, claimed.file_type)
+            duration = (datetime.now(UTC) - claimed.locked_at).total_seconds()
             with pool.connection() as conn:
                 mark_done(conn, claimed.id, resume.model_dump())
-            log(f"done resume {claimed.id}")
+            log(f"done resume {claimed.id} in {duration:.1f}s (attempt {claimed.attempts})")
         except Exception as e:
+            duration = (datetime.now(UTC) - claimed.locked_at).total_seconds()
             if is_transient(e) and claimed.attempts < MAX_ATTEMPTS:
                 with pool.connection() as conn:
                     requeue(conn, claimed.id)
                 progress = f"{claimed.attempts}/{MAX_ATTEMPTS}"
-                log(f"requeued resume {claimed.id} (attempt {progress}): {e}")
+                log(f"requeued resume {claimed.id} after {duration:.1f}s (attempt {progress}): {e}")
             else:
                 with pool.connection() as conn:
                     mark_failed(conn, claimed.id, str(e))
-                log(f"failed resume {claimed.id} after {claimed.attempts} attempt(s): {e}")
+                log(
+                    f"failed resume {claimed.id} after {duration:.1f}s, "
+                    f"{claimed.attempts} attempt(s): {e}"
+                )
 
 
 def run() -> None:
