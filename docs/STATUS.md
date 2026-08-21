@@ -82,7 +82,40 @@ legacy rows to worry about either way), but dropping a column outright
 is the one step here that isn't easily undone, so it's kept as its own
 separate, explicitly-approved change rather than bundled with steps 1-2.
 
-### 2. Other next steps
+### 2. Raw-file retention — design only, not implemented
+No automatic (or manual) deletion exists yet, and none should be added
+until the product requirement — how long a raw resume needs to exist
+after parsing — is actually decided. This is just confirming the
+storage layer doesn't block adding it later, without building it now.
+
+**Already true today, no changes needed:**
+- The raw binary (Storage, `storage_path`) and the parsed result
+  (Postgres, `parsed_result` JSONB) are fully decoupled — confirmed as
+  part of the `file_data` cutover above. Deleting the Storage object
+  for a `done` row cannot lose parsed data; they don't share storage.
+- `storage_path` is already a nullable column, so "file deleted" can
+  be represented by setting it to `NULL` — no new "deleted" flag or
+  column required.
+- `updated_at` is already bumped to `now()` by `mark_done` (see
+  `db/jobs.py`), so "how long ago did this finish" for a `done` row is
+  just `now() - updated_at` — no new "completed_at" timestamp needed,
+  same reasoning as the metrics work above.
+- `GET /resumes/{id}` (`api/main.py`) never returns `storage_path` to
+  the client, so nulling it out later changes nothing about the API's
+  response shape.
+
+**What a future cleanup policy would look like, once a retention
+period is confirmed:** find `done` rows with `storage_path IS NOT NULL
+AND updated_at < now() - interval '<retention>'`, delete each Storage
+object, then set that row's `storage_path` to `NULL`. That's a query
+against columns that already exist — no schema change required to
+turn it on.
+
+**Deliberately not built:** the query above, any script or cron to run
+it, and any column/flag beyond what's listed. Building it now would be
+implementing a policy that hasn't been confirmed.
+
+### 3. Other next steps
 - Search (hybrid keyword + semantic) — not started. Core to the
   project's pitch but no build-order step or design yet.
 - Step 7 — deploy.
