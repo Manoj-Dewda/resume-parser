@@ -11,7 +11,12 @@ Candidate-facing: shows people how a parser actually reads their resume.
 Every service must have a permanent free tier. Approved:
 - LLM + embeddings: Google Gemini free tier
 - Database: Supabase or Neon (Postgres + pgvector)
-- Hosting: Vercel Hobby
+- Frontend hosting: Vercel Free (Next.js only)
+- Backend hosting: Render Free (Web Service) — runs `api/` and
+  `worker/` together in one service, since Render has no free instance
+  type for its separate Background Worker service type. See
+  `docs/DEPLOY.md` for the startup command and why this is one service,
+  not two.
 - CI: GitHub Actions (public repo)
 
 No Redis. No paid APIs. No AWS services that bill.

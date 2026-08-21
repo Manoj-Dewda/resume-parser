@@ -118,4 +118,8 @@ implementing a policy that hasn't been confirmed.
 ### 3. Other next steps
 - Search (hybrid keyword + semantic) — not started. Core to the
   project's pitch but no build-order step or design yet.
-- Step 7 — deploy.
+- Step 7 — deploy. Architecture decided (Vercel for the frontend,
+  Render Free running the API and worker together in one Web Service,
+  since Render has no free instance type for a separate Background
+  Worker) and written up in `docs/DEPLOY.md`, but nothing has actually
+  been provisioned yet.
