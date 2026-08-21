@@ -118,10 +118,14 @@ implementing a policy that hasn't been confirmed.
 ### 3. Other next steps
 - Search (hybrid keyword + semantic) — not started. Core to the
   project's pitch but no build-order step or design yet.
-- Step 7 — deploy. Architecture decided: Vercel for the frontend,
-  Render Free for `api/` alone (sleep-on-idle is acceptable for a
-  request/response service), and a Google Cloud Always Free `e2-micro`
-  VM for `worker/` alone, since the worker's continuous queue-polling
-  loop can't tolerate Render's sleep behavior the way the API can.
-  Written up in `docs/DEPLOY.md`. Nothing has actually been provisioned
-  yet.
+- Step 7 — deploy. Final architecture decided: Vercel for the frontend,
+  and Render Free running `api/` and `worker/` together in one Web
+  Service (Render has no free instance type for a separate Background
+  Worker). Written up in `docs/DEPLOY.md`. Nothing has actually been
+  provisioned yet.
+
+  Oracle Cloud was evaluated earlier for the backend (its Always Free
+  VM doesn't sleep, which the worker's continuous queue-polling loop
+  needs) but was abandoned because deployment attempts there were
+  unreliable in practice. It is not part of the current deployment
+  architecture.

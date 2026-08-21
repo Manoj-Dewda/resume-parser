@@ -12,14 +12,13 @@ Every service must have a permanent free tier. Approved:
 - LLM + embeddings: Google Gemini free tier
 - Database: Supabase or Neon (Postgres + pgvector)
 - Frontend hosting: Vercel Free (Next.js only)
-- API hosting: Render Free (Web Service) — `api/` only. Free-tier sleep
-  after idle is acceptable here since it's request/response.
-- Worker hosting: Google Cloud Always Free `e2-micro` VM — `worker/`
-  only. Must not sleep, since it's a continuous queue poller; Render
-  Free's sleep-after-idle behavior makes it unsuitable for this piece
-  specifically, even though it's fine for `api/`. Render Free (API +
-  worker together in one service) remains an acceptable
-  development/demo-only setup — see `docs/DEPLOY.md`.
+- Backend hosting: Render Free (Web Service) — runs `api/` and
+  `worker/` together in one service, since Render has no free instance
+  type for its separate Background Worker service type. See
+  `docs/DEPLOY.md` for the startup command and why this is one service,
+  not two. Oracle Cloud was evaluated and explicitly rejected —
+  repeated deployment attempts there were unreliable, and it is not an
+  approved option, not even as an alternative.
 - CI: GitHub Actions (public repo)
 
 No Redis. No paid APIs. No AWS services that bill.
