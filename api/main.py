@@ -62,9 +62,20 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(lifespan=lifespan)
 
+# Comma-separated list of allowed frontend origins. Defaults to the local
+# Next.js dev server; set to the deployed frontend's actual origin(s) in
+# production. Deliberately not "*" — this API accepts uploads and serves
+# per-resume results, so an explicit allowlist is the right default rather
+# than something that needs a specific reason to tighten later.
+CORS_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=CORS_ORIGINS,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
