@@ -66,36 +66,21 @@ verified end-to-end live, including the success path.
 
 ## Next up
 
-### 1. `file_data` cutover — keep-until / delete-when criteria
-Right now every upload still dual-writes: the full binary goes to both
-`file_data` (Postgres) and Storage (`storage_path`). That's deliberate,
-not forgotten — `file_data` is the rollback safety net while
-`storage_path` is new and only lightly exercised (one live test so far).
+### 1. `file_data` cutover — in progress
+Steps 1-2 done: `api/main.py` no longer writes `file_data` on new
+uploads (`db/jobs.py`'s `enqueue` dropped the parameter entirely), and
+migration `0004_make_file_data_nullable.sql` dropped the `NOT NULL`
+constraint so those inserts succeed. Verified live: uploaded both a
+`.docx` and a `.pdf`, confirmed `file_data IS NULL` on the new rows,
+and confirmed Supabase Storage download returns byte-identical content
+for both file types.
 
-**Keep `file_data` (don't touch it) until all of these hold:**
-- `storage_path` has been exercised across several more real uploads,
-  covering both `.pdf` and `.docx`, with no download/parse failures
-  traceable to Storage itself (a Gemini-side failure like a 429/503 is
-  fine and unrelated — this is specifically about the Storage read path).
-- No job in the table predates the migration and still lacks a
-  `storage_path` — check via `SELECT count(*) FROM resumes WHERE
-  storage_path IS NULL`; should be 0 before cutting over.
-- The worker's `claimed.file_data` fallback branch (used only when
-  `storage_path` is absent) has had a chance to sit unused for a while,
-  confirming nothing still depends on it.
-
-**Cutover, once those hold — in this order, each as its own step:**
-1. Stop writing `file_data` in `api/main.py`'s `enqueue` call.
-2. New migration: `ALTER TABLE resumes ALTER COLUMN file_data DROP NOT NULL`.
-3. Verify a real upload still works end-to-end with `file_data` no
-   longer populated for new rows.
-4. Only after that's proven out: a final migration to `DROP COLUMN
-   file_data` entirely, and delete the now-dead fallback branch in
-   `worker/run.py`.
-
-Do not skip straight to step 4. Each step should be its own reviewed
-change, not one big diff — this is exactly the kind of cutover where
-"looked fine in the diff" and "actually fine in production" can diverge.
+Remaining: step 3, a final migration to `DROP COLUMN file_data`
+entirely and delete the now-dead `claimed.file_data` fallback branch in
+`worker/run.py`. Not done yet — the table was empty at cutover time (no
+legacy rows to worry about either way), but dropping a column outright
+is the one step here that isn't easily undone, so it's kept as its own
+separate, explicitly-approved change rather than bundled with steps 1-2.
 
 ### 2. Other next steps
 - Search (hybrid keyword + semantic) — not started. Core to the

@@ -18,7 +18,7 @@ class ClaimedResume:
     id: int
     original_filename: str
     file_type: Literal["pdf", "docx"]
-    file_data: bytes
+    file_data: bytes | None
     storage_path: str | None
     attempts: int
     created_at: datetime
@@ -49,17 +49,19 @@ def enqueue(
     conn: psycopg.Connection,
     original_filename: str,
     file_type: Literal["pdf", "docx"],
-    file_data: bytes,
     storage_path: str,
 ) -> int:
+    """The binary goes to Supabase Storage only (storage_path) — Postgres
+    keeps just the job row. file_data stays NULL for every new upload; it
+    remains nullable only for whatever pre-cutover rows may still exist."""
     with conn.cursor() as cur:
         cur.execute(
             """
-            INSERT INTO resumes (original_filename, file_type, file_data, storage_path)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO resumes (original_filename, file_type, storage_path)
+            VALUES (%s, %s, %s)
             RETURNING id
             """,
-            (original_filename, file_type, file_data, storage_path),
+            (original_filename, file_type, storage_path),
         )
         resume_id = cur.fetchone()[0]
     conn.commit()
@@ -92,7 +94,7 @@ def claim_next(conn: psycopg.Connection) -> ClaimedResume | None:
         id=row[0],
         original_filename=row[1],
         file_type=row[2],
-        file_data=bytes(row[3]),
+        file_data=bytes(row[3]) if row[3] is not None else None,
         storage_path=row[4],
         attempts=row[5],
         created_at=row[6],

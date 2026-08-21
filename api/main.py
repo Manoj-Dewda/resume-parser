@@ -187,7 +187,7 @@ async def upload_resume(file: UploadFile, conn: DbConnection):
     file_data = await read_upload(file, MAX_RESUME_SIZE_BYTES)
     storage_path = upload_to_storage(file_data, file.filename)
 
-    resume_id = enqueue(conn, file.filename, file_type, file_data, storage_path)
+    resume_id = enqueue(conn, file.filename, file_type, storage_path)
 
     return {"id": resume_id, "status": "pending"}
 
